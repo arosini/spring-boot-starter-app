@@ -15,6 +15,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/demo")
 public class DemoController {
 
+  /**
+   * A controller method for demonstration purposes.
+   * 
+   * @param pathVariable
+   *          A path variable for demonstration purposes.
+   * 
+   * @return The provided path variable as a value in a {@link DemoModel}
+   */
   @RequestMapping("/{pathVariable}")
   public DemoModel demoControllerMethod(@PathVariable String pathVariable) {
     DemoModel demoModel = new DemoModel();

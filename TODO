@@ -1,3 +1,7 @@
 - Add build reports
+ - CPD
+ - Jacoco
 - Add JUnit tests
-- Add JUnit Integration tests?
+- Add JUnit Integration tests
+- Add Swagger documentation
+- Add project documentation
