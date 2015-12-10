@@ -20,7 +20,7 @@ apply plugin: 'spring-boot'
 apply plugin: 'checkstyle'
 apply plugin: 'findbugs'
 apply plugin: 'pmd'
-apply plugin: 'cpd'
+apply plugin: 'jacoco'
 
 // Jar configuration
 jar {
@@ -94,9 +94,14 @@ tasks.withType(Pmd) {
   }
 }
 
-// Miscellaneous properties
-description = "A starter project to create Spring Boot projects from."
-ext.timestamp = new Date()
+// Jacoco configuration
+jacocoTestReport {
+  reports {
+    xml.enabled = false
+    csv.enabled = false
+    html.destination = "${buildDir}/reports/jacoco"
+  }
+}
 
 // Wrapper configuration
 task wrapper(type: Wrapper) {

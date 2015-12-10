@@ -1,2 +1,7 @@
+# Directories
 /build/
 /bin/
+/.gradle/
+
+# Files
+.springBeans

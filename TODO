@@ -1,7 +1,10 @@
 - Add build reports
- - CPD
  - Jacoco
+ - Report index
 - Add JUnit tests
 - Add JUnit Integration tests
+- Add model validation
+- Add model hooks
+- Add request validation
 - Add Swagger documentation
 - Add project documentation

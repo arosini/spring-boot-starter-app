@@ -1,4 +1,4 @@
-package org.ar;
+package ar;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

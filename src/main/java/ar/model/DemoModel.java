@@ -1,4 +1,4 @@
-package org.ar.model;
+package ar.model;
 
 import lombok.Data;
 
