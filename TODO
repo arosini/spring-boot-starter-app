@@ -1,10 +1,15 @@
-- Add build reports
- - Jacoco
- - Report index
-- Add JUnit tests
+High Priority:
 - Add JUnit Integration tests
+- Add mongo
 - Add model validation
 - Add model hooks
 - Add request validation
-- Add Swagger documentation
-- Add project documentation
+- Add Swagger
+- Populate README
+
+
+Low Priority:
+- Fix eclipse warnings
+- Consolidate checks/reports (checkStyle, Jacoco, PMD, Findbugs)
+- Add CPD
+- Fail build on less than 100% code coverage

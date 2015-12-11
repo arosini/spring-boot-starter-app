@@ -9,11 +9,16 @@ import lombok.Data;
  * 
  */
 @Data
-public class DemoModel {
+public final class DemoModel {
 
   /**
    * A field for demonstration purposes.
    */
   private String demoField;
+
+  /**
+   * A second field for demonstration purposes.
+   */
+  private String anotherDemoField;
 
 }
