@@ -1,6 +1,5 @@
 High Priority:
 - Add JUnit Integration tests
-- Add docker
 - Add model validation
 - Add model hooks
 - Add request validation

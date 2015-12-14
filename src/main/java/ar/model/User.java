@@ -1,7 +1,8 @@
 package ar.model;
 
 import lombok.Data;
-import org.springframework.data.annotation.Id;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 /**
  * Represents a user of the system.
@@ -10,13 +11,9 @@ import org.springframework.data.annotation.Id;
  * 
  */
 @Data
-public final class User {
-
-  /**
-   * The User's unique identifier.
-   */
-  @Id
-  private String id;
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
+public class User extends Model {
 
   /**
    * The User's first name.

@@ -56,7 +56,9 @@ dependencies {
   compile "org.projectlombok:lombok"
   
   testCompile "com.google.guava:guava:19.0"
+  testCompile "com.jayway.restassured:rest-assured:2.7.0"
   testCompile "nl.jqno.equalsverifier:equalsverifier:1.7.5"
+  testCompile "org.javassist:javassist:3.20.0-GA"
   testCompile "org.meanbean:meanbean:2.0.3"
   testCompile "org.springframework.boot:spring-boot-starter-test"
   testCompile "org.unitils:unitils:2.2"
