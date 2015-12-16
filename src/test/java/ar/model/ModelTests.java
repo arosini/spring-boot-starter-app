@@ -69,12 +69,6 @@ public class ModelTests {
     subClass.setSuperclass(superClass);
     subClass.setModifiers(Modifier.PUBLIC);
 
-    // Add a constructor which will call super( ... );
-    // CtClass[] params = new CtClass[] {};
-    // final CtConstructor ctor = CtNewConstructor.make(params, null, CtNewConstructor.PASS_PARAMS, null, null,
-    // subClass);
-    // subClass.addConstructor(ctor);
-
     // Add a canEquals method
     final CtMethod ctmethod = CtNewMethod
         .make("public boolean canEqual(Object o) { return o instanceof " + superClassName + "Extended; }", subClass);

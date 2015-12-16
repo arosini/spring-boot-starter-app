@@ -5,6 +5,7 @@ import ar.model.User;
 import ar.repository.UserRepository;
 
 import com.jayway.restassured.RestAssured;
+import com.jayway.restassured.response.Response;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +13,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.boot.test.WebIntegrationTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.util.ReflectionTestUtils;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = SpringBootStarterApplication.class)
@@ -30,10 +30,12 @@ public abstract class IntegrationTests {
   @Before
   public void before() {
     baseUrl = "http://localhost:" + port;
-    RestAssured.port = port;
-
     userRepoistory.deleteAll();
     createTestUsers();
+  }
+
+  protected Response get(String path) {
+    return RestAssured.get(baseUrl + path);
   }
 
   private void createTestUsers() {
@@ -45,7 +47,7 @@ public abstract class IntegrationTests {
 
   private User createTestUser(String id, String firstName, String lastName) {
     User user = new User();
-    ReflectionTestUtils.setField(user, "id", id);
+    user.setId(id);
     user.setFirstName(firstName);
     user.setLastName(lastName);
     return userRepoistory.save(user);

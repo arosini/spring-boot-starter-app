@@ -1,0 +1,80 @@
+/**************************************************
+* Plugins 
+**************************************************/
+apply plugin: "checkstyle"
+apply plugin: "findbugs"
+apply plugin: "pmd"
+apply plugin: "jacoco"
+
+/**************************************************
+* Checkstyle 
+**************************************************/
+checkstyle {
+  toolVersion = "6.13"
+  ignoreFailures = false
+}
+
+// Configure main HTML report
+checkstyleMain << {
+  ant.xslt(in: reports.xml.destination,
+    style: new File("config/checkstyle/checkstyle-noframes-sorted.xsl"),
+    out: new File(reports.xml.destination.parent, "main.html"))
+}
+
+// Configure test HTML report
+checkstyleTest << {
+  ant.xslt(in: reports.xml.destination,
+    style: new File("config/checkstyle/checkstyle-noframes-sorted.xsl"),
+    out: new File(reports.xml.destination.parent, "test.html"))
+}
+
+// Fail build on warnings
+tasks.withType(Checkstyle).each { checkstyleTask ->
+  checkstyleTask.doLast {
+    reports.all { report ->
+      def outputFile = report.destination
+      if (outputFile.exists() && outputFile.text.contains("<error ")) {
+        throw new GradleException("There were checkstyle warnings! For more info check $outputFile")
+      }
+    }
+  }
+}
+
+/**************************************************
+* Findbugs 
+**************************************************/
+findbugs {
+  ignoreFailures = false
+}  
+
+tasks.withType(FindBugs) {
+  reports {
+    xml.enabled = false
+    html.enabled = true
+  }
+}
+
+/**************************************************
+* PMD 
+**************************************************/
+pmd {
+  ignoreFailures = false
+}
+
+tasks.withType(Pmd) {
+  reports {
+    xml.enabled = false
+    html.enabled = true
+  }
+}
+
+/**************************************************
+* Jacoco 
+**************************************************/
+jacocoTestReport {
+  reports {
+    xml.enabled = false
+    csv.enabled = false
+    html.destination = "${buildDir}/reports/jacoco"
+  }
+}
