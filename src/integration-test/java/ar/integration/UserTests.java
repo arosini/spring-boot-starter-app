@@ -9,11 +9,10 @@ import com.jayway.restassured.response.Response;
 import org.apache.http.HttpStatus;
 import org.junit.Test;
 
-public class UserTests extends IntegrationTests {
+public class UserTests extends AbstractIntegrationTests {
 
   @Test
   public void getUser() {
-    System.out.println(get("/users/1").asString());
     get("/users/1").then()
         .contentType(ContentType.JSON)
         .statusCode(HttpStatus.SC_OK)
@@ -62,13 +61,14 @@ public class UserTests extends IntegrationTests {
   }
 
   private void assertEmbeddedUser(Response response, int index, String id, String firstName, String lastName) {
+    String userJsonPath = "_embedded.users[" + index + "]";
     String userUrl = baseUrl + "/users/" + id;
 
     response.then()
-        .body("_embedded.users[" + index + "].firstName", equalTo(firstName))
-        .body("_embedded.users[" + index + "].lastName", equalTo(lastName))
-        .body("_embedded.users[" + index + "]._links.self.href", equalTo(userUrl))
-        .body("_embedded.users[" + index + "]._links.user.href", equalTo(userUrl));
+        .body(userJsonPath + ".firstName", equalTo(firstName))
+        .body(userJsonPath + ".lastName", equalTo(lastName))
+        .body(userJsonPath + "._links.self.href", equalTo(userUrl))
+        .body(userJsonPath + "._links.user.href", equalTo(userUrl));
   }
 
 }

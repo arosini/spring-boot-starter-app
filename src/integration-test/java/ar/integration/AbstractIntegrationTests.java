@@ -17,7 +17,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = SpringBootStarterApplication.class)
 @WebIntegrationTest
-public abstract class IntegrationTests {
+public abstract class AbstractIntegrationTests {
 
   @Value("${local.server.port}")
   private int port;

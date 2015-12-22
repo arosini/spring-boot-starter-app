@@ -19,7 +19,7 @@ buildscript {
 * Plugins 
 **************************************************/
 plugins {
-    id 'org.unbroken-dome.test-sets' version '1.1.0'
+  id 'org.unbroken-dome.test-sets' version '1.1.0'
 }
 
 apply plugin: "java"
@@ -83,8 +83,8 @@ eclipse {
 dependencies {
   compile "org.springframework.boot:spring-boot-starter-actuator"
   compile "org.springframework.boot:spring-boot-starter-aop"
-  compile("org.springframework.boot:spring-boot-starter-data-mongodb")
-  compile("org.springframework.boot:spring-boot-starter-data-rest")
+  compile "org.springframework.boot:spring-boot-starter-data-mongodb"
+  compile "org.springframework.boot:spring-boot-starter-data-rest"
   compile "org.springframework.boot:spring-boot-starter-web"
   compile "org.projectlombok:lombok"
   
@@ -116,6 +116,9 @@ check.mustRunAfter integrationTest
 // Generate the code coverage report after unit tests are run, but before the integration tests are run
 test.finalizedBy jacocoTestReport
 integrationTest.mustRunAfter jacocoTestReport
+
+// Generate javadoc after compiling the main source
+compileJava.finalizedBy javadoc
 
 /**************************************************
 * Wrapper 

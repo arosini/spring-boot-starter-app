@@ -8,7 +8,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.annotation.Version;
 
 import java.util.Date;
 
@@ -19,7 +19,6 @@ import java.util.Date;
  *
  */
 @Data
-@Document
 @EqualsAndHashCode
 @ToString
 public abstract class Model {
@@ -31,10 +30,16 @@ public abstract class Model {
   private String id;
 
   /**
+   * The version of this object.
+   */
+  @Version
+  private Long version;
+
+  /**
    * Who created the model instance.
    */
   @CreatedBy
-  protected String createdBy;
+  private String createdBy;
 
   /**
    * When the model instance was created.

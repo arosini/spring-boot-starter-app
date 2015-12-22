@@ -32,12 +32,12 @@ public class ModelTests {
     final ClassLoader loader = Thread.currentThread().getContextClassLoader();
 
     // Loop through classes in the model package
-    for (final ClassPath.ClassInfo info : ClassPath.from(loader).getTopLevelClassesRecursive(MODEL_PACKAGE)) {
+    for (final ClassPath.ClassInfo info : ClassPath.from(loader).getTopLevelClasses(MODEL_PACKAGE)) {
       final Class<?> clazz = info.load();
       int modifiers = clazz.getModifiers();
 
-      // Skip interfaces and this class
-      if (Modifier.isInterface(modifiers) || clazz.equals(this.getClass())) {
+      // Skip interfaces and non-model classes (such as this test class)
+      if (Modifier.isInterface(modifiers) || !(clazz.isAssignableFrom(Model.class))) {
         continue;
       }
 

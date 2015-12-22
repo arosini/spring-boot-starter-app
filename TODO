@@ -1,13 +1,18 @@
 High Priority:
-- Add JUnit Integration tests
-- Add model validation
-- Add model hooks
-- Add request validation
+- CREATE integration tests (POST)
+- UPDATE integration tests (PATCH)
+- REPLACE integration tests (PUT)
+- DELETE integration tests (DELETE)
+
+- Add model validation (beforeCreate/beforeSave user validator, error mesasges, Unit tests, integration tests)
+- Add event listeners (http://docs.spring.io/spring-data/rest/docs/current/reference/html/#events.application-listener)
+- Add request validation (is this given to me?)
 - Add Swagger
 - Populate README
 
 Low Priority:
-- Fix eclipse warnings
-- Consolidate checks/reports (checkStyle, Jacoco, PMD, Findbugs)
+- Separate internal IDS from external REST endpoint??
+- Consolidate checks/reports (checkStyle, Jacoco, PMD, Findbugs) into single index page
 - Add CPD
+- Make reports look nicer
 - Fail build on less than 100% code coverage
