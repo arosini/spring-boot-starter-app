@@ -1,5 +1,6 @@
 package ar.integration;
 
+import static com.jayway.restassured.RestAssured.get;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 

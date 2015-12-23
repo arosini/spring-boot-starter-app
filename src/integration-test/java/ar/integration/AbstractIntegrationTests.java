@@ -4,8 +4,6 @@ import ar.SpringBootStarterApplication;
 import ar.model.User;
 import ar.repository.UserRepository;
 
-import com.jayway.restassured.RestAssured;
-import com.jayway.restassured.response.Response;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,23 +17,22 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @WebIntegrationTest
 public abstract class AbstractIntegrationTests {
 
+  /** The path and port of the service. **/
+  protected String baseUrl;
+
   @Value("${local.server.port}")
   private int port;
 
   @Autowired
   private UserRepository userRepoistory;
 
-  protected String baseUrl;
-
   @Before
   public void before() {
     baseUrl = "http://localhost:" + port;
-    userRepoistory.deleteAll();
-    createTestUsers();
-  }
 
-  protected Response get(String path) {
-    return RestAssured.get(baseUrl + path);
+    userRepoistory.deleteAll();
+
+    createTestUsers();
   }
 
   private void createTestUsers() {

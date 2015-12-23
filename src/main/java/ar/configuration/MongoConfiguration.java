@@ -1,9 +1,12 @@
 package ar.configuration;
 
+import ar.model.validation.UserValidator;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.mongodb.config.EnableMongoAuditing;
+import org.springframework.data.rest.core.event.ValidatingRepositoryEventListener;
 import org.springframework.data.rest.webmvc.config.RepositoryRestMvcConfiguration;
 
 @Configuration
@@ -11,7 +14,7 @@ import org.springframework.data.rest.webmvc.config.RepositoryRestMvcConfiguratio
 public class MongoConfiguration extends RepositoryRestMvcConfiguration {
 
   /**
-   * {@link AuditorAware} implementation which MongoDB uses to populate fields such as @CreatedBy and @LastModifiedBy.
+   * s {@link AuditorAware} implementation which MongoDB uses to populate fields such as @CreatedBy and @LastModifiedBy.
    * 
    * @return The auditing object for MongoDB documents.
    */
@@ -23,6 +26,12 @@ public class MongoConfiguration extends RepositoryRestMvcConfiguration {
         return null;
       }
     };
+  }
+
+  @Override
+  protected void configureValidatingRepositoryEventListener(ValidatingRepositoryEventListener validatingListener) {
+    validatingListener.addValidator("beforeCreate", new UserValidator());
+    validatingListener.addValidator("beforeSave", new UserValidator());
   }
 
 }

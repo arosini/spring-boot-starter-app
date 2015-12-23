@@ -4,13 +4,18 @@ High Priority:
 - REPLACE integration tests (PUT)
 - DELETE integration tests (DELETE)
 
+- Change management context to /admin
+- HEALTH endpoint tests
+- INFO endpoint tests
+
 - Add model validation (beforeCreate/beforeSave user validator, error mesasges, Unit tests, integration tests)
-- Add event listeners (http://docs.spring.io/spring-data/rest/docs/current/reference/html/#events.application-listener)
-- Add request validation (is this given to me?)
+- Add event listeners (strip fields) (http://docs.spring.io/spring-data/rest/docs/current/reference/html/#events.application-listener)
+- Add request validation
 - Add Swagger
 - Populate README
 
 Low Priority:
+- Increase code analysis levels
 - Separate internal IDS from external REST endpoint??
 - Consolidate checks/reports (checkStyle, Jacoco, PMD, Findbugs) into single index page
 - Add CPD

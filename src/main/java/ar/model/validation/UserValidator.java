@@ -12,15 +12,13 @@ public class UserValidator implements Validator {
 
   @Override
   public boolean supports(Class<?> clazz) {
-    System.out.println("SUPPORTS: " + clazz + ": " + User.class.equals(clazz));
     return User.class.equals(clazz);
   }
 
   @Override
   public void validate(Object target, Errors errors) {
-    System.out.println("VALIDATING!");
-    ValidationUtils.rejectIfEmpty(errors, "firstName", "firstName.empty");
-    ValidationUtils.rejectIfEmpty(errors, "lastName", "lastName.empty");
+    ValidationUtils.rejectIfEmptyOrWhitespace(errors, "firstName", "first-name.empty");
+    ValidationUtils.rejectIfEmptyOrWhitespace(errors, "lastName", "last-name.empty");
   }
 
 }
