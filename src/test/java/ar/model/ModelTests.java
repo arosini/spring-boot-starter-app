@@ -37,7 +37,7 @@ public class ModelTests {
       int modifiers = clazz.getModifiers();
 
       // Skip interfaces and non-model classes (such as this test class)
-      if (Modifier.isInterface(modifiers) || !(clazz.isAssignableFrom(Model.class))) {
+      if (Modifier.isInterface(modifiers) || !(clazz.isAssignableFrom(Resource.class))) {
         continue;
       }
 

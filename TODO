@@ -21,3 +21,4 @@ Low Priority:
 - Add CPD
 - Make reports look nicer
 - Fail build on less than 100% code coverage
+- Dockerize

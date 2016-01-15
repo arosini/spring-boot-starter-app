@@ -14,7 +14,7 @@ import org.springframework.data.rest.webmvc.config.RepositoryRestMvcConfiguratio
 public class MongoConfiguration extends RepositoryRestMvcConfiguration {
 
   /**
-   * s {@link AuditorAware} implementation which MongoDB uses to populate fields such as @CreatedBy and @LastModifiedBy.
+   * {@link AuditorAware} implementation which MongoDB uses to populate the @CreatedBy and @LastModifiedBy properties.
    * 
    * @return The auditing object for MongoDB documents.
    */
@@ -28,6 +28,9 @@ public class MongoConfiguration extends RepositoryRestMvcConfiguration {
     };
   }
 
+  /**
+   * Configures event listeners used for validation before saving to the database.
+   */
   @Override
   protected void configureValidatingRepositoryEventListener(ValidatingRepositoryEventListener validatingListener) {
     validatingListener.addValidator("beforeCreate", new UserValidator());

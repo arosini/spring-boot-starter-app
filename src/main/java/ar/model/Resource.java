@@ -21,40 +21,40 @@ import java.util.Date;
 @Data
 @EqualsAndHashCode
 @ToString
-public abstract class Model {
+public abstract class Resource {
 
   /**
-   * The model's unique identifier.
+   * The Resource's unique identifier.
    */
   @Id
   private String id;
 
   /**
-   * The version of this object.
+   * The version of this Resource.
    */
   @Version
   private Long version;
 
   /**
-   * Who created the model instance.
+   * Who created the Resource instance.
    */
   @CreatedBy
   private String createdBy;
 
   /**
-   * When the model instance was created.
+   * When the Resource instance was created.
    */
   @CreatedDate
   private Date createdDate;
 
   /**
-   * Who last modified the model instance.
+   * Who last modified the Resource instance.
    */
   @LastModifiedBy
   private String lastModifiedBy;
 
   /**
-   * When the model instance was last modified.
+   * When the Resource instance was last modified.
    */
   @LastModifiedDate
   private Date lastModifiedDate;

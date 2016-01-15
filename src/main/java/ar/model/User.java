@@ -3,6 +3,8 @@ package ar.model;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
  * Represents a user of the system.
@@ -10,10 +12,11 @@ import lombok.ToString;
  * @author adam
  * 
  */
+@Document
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
-public class User extends Model {
+public class User extends Resource {
 
   /**
    * The User's first name.
@@ -24,5 +27,11 @@ public class User extends Model {
    * The User's last name.
    */
   private String lastName;
+
+  /**
+   * The User's alias.
+   */
+  @Indexed(unique = true)
+  private String username;
 
 }

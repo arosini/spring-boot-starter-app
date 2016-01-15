@@ -1,9 +1,19 @@
 package ar.integration;
 
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.Matchers.startsWith;
+
 import ar.SpringBootStarterApplication;
+import ar.model.Resource;
 import ar.model.User;
 import ar.repository.UserRepository;
 
+import com.jayway.restassured.RestAssured;
+import com.jayway.restassured.response.Response;
+import org.atteo.evo.inflector.English;
+import org.hamcrest.Matcher;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +22,12 @@ import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.boot.test.WebIntegrationTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+/**
+ * Base integration test class which all integration test classes should extend.
+ * 
+ * @author rosinia
+ *
+ */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = SpringBootStarterApplication.class)
 @WebIntegrationTest
@@ -28,6 +44,7 @@ public abstract class AbstractIntegrationTests {
 
   @Before
   public void before() {
+    RestAssured.port = port;
     baseUrl = "http://localhost:" + port;
 
     userRepoistory.deleteAll();
@@ -35,19 +52,56 @@ public abstract class AbstractIntegrationTests {
     createTestUsers();
   }
 
-  private void createTestUsers() {
-    createTestUser("1", "User", "One");
-    createTestUser("2", "User", "One");
-    createTestUser("3", "Another", "One");
-    createTestUser("4", "User", "Four");
+  /**
+   * Validates a response resource's common fields such as audit fields and links.
+   * 
+   * @param response The response containing the resource.
+   * @param jsonPath The path to the resource within the response. Should not be null.
+   * @param resourceClass The POJO class of the resource to validate.
+   * @param resourceId The ID of the resource to the validate. Ignored if null.
+   */
+  protected void validateCommonFields(Response response, String jsonPath, Class<? extends Resource> resourceClass,
+      String resourceId) {
+    String resourceType = resourceClass.getSimpleName().toLowerCase();
+    String resourceClassUrl = baseUrl + "/" + English.plural(resourceType) + "/";
+
+    Matcher<String> linkMatcher = resourceId == null ? startsWith(resourceClassUrl)
+        : equalTo(resourceClassUrl + resourceId);
+
+    response.then()
+        .body(jsonPath + "createdBy", nullValue())
+        .body(jsonPath + "createdDate", notNullValue())
+        .body(jsonPath + "lastModifiedBy", nullValue())
+        .body(jsonPath + "lastModifiedDate", notNullValue())
+        .body(jsonPath + "_links.self.href", linkMatcher)
+        .body(jsonPath + "_links." + resourceType + ".href", linkMatcher);
   }
 
-  private User createTestUser(String id, String firstName, String lastName) {
+  protected void assertEmbeddedResource(Response response, Class<? extends Resource> resourceClass, int index,
+      String id, String firstName, String lastName) {
+    String resourceTypePlural = English.plural(resourceClass.getSimpleName().toLowerCase());
+    String userJsonPath = "_embedded." + resourceTypePlural + "[" + index + "].";
+
+    response.then()
+        .body(userJsonPath + "firstName", equalTo(firstName))
+        .body(userJsonPath + "lastName", equalTo(lastName));
+
+    validateCommonFields(response, userJsonPath, User.class, id);
+  }
+
+  private void createTestUsers() {
+    createTestUser("1", "Charles", "Xavier", "Professor X");
+    createTestUser("2", "Scott", "Summers", "Cyclops");
+    createTestUser("3", "Alex", "Summers", "Havok");
+  }
+
+  private void createTestUser(String id, String firstName, String lastName, String username) {
     User user = new User();
     user.setId(id);
     user.setFirstName(firstName);
     user.setLastName(lastName);
-    return userRepoistory.save(user);
+    user.setUsername(username);
+    userRepoistory.save(user);
   }
 
 }

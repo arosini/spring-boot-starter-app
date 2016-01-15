@@ -1,10 +1,11 @@
 package ar.integration;
 
+import static com.jayway.restassured.RestAssured.get;
 import static com.jayway.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.isEmptyString;
-import static org.hamcrest.Matchers.startsWith;
+import static org.hamcrest.Matchers.nullValue;
 
 import ar.model.User;
 
@@ -16,33 +17,106 @@ import org.junit.Test;
 
 public class UserTests extends AbstractIntegrationTests {
 
-  private User postUser;
+  private User user;
 
   @Override
   @Before
   public void before() {
     super.before();
 
-    postUser = new User();
-    postUser.setFirstName("Test");
-    postUser.setLastName("User");
+    user = new User();
+    user.setFirstName("Kurt");
+    user.setLastName("Wagner");
+    user.setUsername("Nightcrawler");
   }
 
   // CREATE
   @Test
   public void createUser() {
-    given().body(postUser).contentType(ContentType.JSON).accept(ContentType.JSON).post(baseUrl + "/users").then()
+    Response response = given().body(user).contentType(ContentType.JSON).accept(ContentType.JSON).post("/users");
+
+    response.then()
         .contentType(ContentType.JSON)
         .statusCode(HttpStatus.SC_CREATED)
-        .body("firstName", equalTo("Test"))
-        .body("lastName", equalTo("User"))
-        .body("_links.self.href", startsWith(baseUrl + "/users/"))
-        .body("_links.user.href", startsWith(baseUrl + "/users/"));
+        .body("firstName", equalTo("Kurt"))
+        .body("lastName", equalTo("Wagner"))
+        .body("username", equalTo("Nightcrawler"));
+
+    validateCommonFields(response, "", User.class, null);
+  }
+
+  @Test
+  public void createUser_nullNonRequiredProperties() {
+    user.setFirstName(null);
+    user.setLastName(null);
+
+    Response response = given().body(user).contentType(ContentType.JSON).accept(ContentType.JSON).post("/users");
+
+    response.then()
+        .contentType(ContentType.JSON)
+        .statusCode(HttpStatus.SC_CREATED)
+        .body("firstName", nullValue())
+        .body("lastName", nullValue())
+        .body("username", equalTo("Nightcrawler"));
+
+    validateCommonFields(response, "", User.class, null);
+  }
+
+  @Test
+  public void createUser_nullUsername() {
+    user.setUsername(null);
+
+    given().body(user).contentType(ContentType.JSON).accept(ContentType.JSON).post("/users").then()
+        .contentType(ContentType.JSON)
+        .statusCode(HttpStatus.SC_BAD_REQUEST)
+        .body("errors[0].entity", equalTo("User"))
+        .body("errors[0].message", equalTo("Username must be present"))
+        .body("errors[0].invalidValue", equalTo("null"))
+        .body("errors[0].property", equalTo("username"));
+  }
+
+  @Test
+  public void createUser_blankUsername() {
+    user.setUsername("");
+
+    given().body(user).contentType(ContentType.JSON).accept(ContentType.JSON).post("/users").then()
+        .contentType(ContentType.JSON)
+        .statusCode(HttpStatus.SC_BAD_REQUEST)
+        .body("errors[0].entity", equalTo("User"))
+        .body("errors[0].message", equalTo("Username must be present"))
+        .body("errors[0].invalidValue", equalTo(""))
+        .body("errors[0].property", equalTo("username"));
+  }
+
+  @Test
+  public void createUser_whitespaceOnlyUsername() {
+    user.setUsername(" ");
+
+    given().body(user).contentType(ContentType.JSON).accept(ContentType.JSON).post("/users").then()
+        .contentType(ContentType.JSON)
+        .statusCode(HttpStatus.SC_BAD_REQUEST)
+        .body("errors[0].entity", equalTo("User"))
+        .body("errors[0].message", equalTo("Username must be present"))
+        .body("errors[0].invalidValue", equalTo(" "))
+        .body("errors[0].property", equalTo("username"));
+  }
+
+  @Test
+  public void createUser_nonUniqueUsername() {
+    user.setUsername("Professor X");
+
+    given().body(user).contentType(ContentType.JSON).accept(ContentType.JSON).post("/users").then()
+        .contentType(ContentType.JSON)
+        .statusCode(HttpStatus.SC_BAD_REQUEST)
+        .body("errors[0].entity", equalTo("User"))
+        .body("errors[0].message", equalTo("Username must be unique"))
+        .body("errors[0].invalidValue", equalTo(""))
+        .body("errors[0].property", equalTo("username"));
   }
 
   @Test
   public void createUser_mediaTypeNotAcceptable() {
-    given().body(postUser).contentType(ContentType.JSON).accept(ContentType.XML).post(baseUrl + "/users").then()
+    given().body(user).contentType(ContentType.JSON).accept(ContentType.XML).post("/users").then()
         .contentType(isEmptyString())
         .statusCode(HttpStatus.SC_NOT_ACCEPTABLE)
         .body(isEmptyString());
@@ -50,57 +124,50 @@ public class UserTests extends AbstractIntegrationTests {
 
   @Test
   public void createUser_unsupportedMediaType() {
-    given().body(postUser).contentType(ContentType.XML).accept(ContentType.JSON).post(baseUrl + "/users").then()
-        .contentType(ContentType.JSON)
+    given().body(user).contentType(ContentType.XML).accept(ContentType.JSON).post("/users").then()
+        .contentType(isEmptyString())
         .statusCode(HttpStatus.SC_UNSUPPORTED_MEDIA_TYPE)
         .body(isEmptyString());
-  }
-
-  @Test
-  public void createUser_missingFirstName() {
-    postUser.setFirstName(null);
-
-    given().body(postUser).contentType(ContentType.JSON).accept(ContentType.JSON).post(baseUrl + "/users").then()
-        .contentType(ContentType.JSON)
-        .statusCode(HttpStatus.SC_UNSUPPORTED_MEDIA_TYPE)
-        .body(isEmptyString());
-  }
-
-  @Test
-  public void createUser_missingLastName() {
   }
 
   // READ
   @Test
   public void getUser() {
-    given().accept(ContentType.JSON).get(baseUrl + "/users/1").then()
+    String userOnePath = "/users/1";
+
+    given().accept(ContentType.JSON).get(userOnePath).then()
         .contentType(ContentType.JSON)
         .statusCode(HttpStatus.SC_OK)
-        .body("firstName", equalTo("User"))
-        .body("lastName", equalTo("One"))
-        .body("_links.self.href", equalTo(baseUrl + "/users/1"))
-        .body("_links.user.href", equalTo(baseUrl + "/users/1"));
+        .body("firstName", equalTo("Charles"))
+        .body("lastName", equalTo("Xavier"))
+        .body("username", equalTo("Professor X"))
+        .body("_links.self.href", equalTo(baseUrl + userOnePath))
+        .body("_links.user.href", equalTo(baseUrl + userOnePath));
   }
 
   @Test
   public void getUser_notFound() {
-    given().accept(ContentType.JSON).get(baseUrl + "/users/0").then()
+    get("/users/0").then()
         .contentType(isEmptyString())
         .statusCode(HttpStatus.SC_NOT_FOUND)
         .body(isEmptyString());
   }
 
   @Test
-  public void getUser_mediaTypeNotAcceptable() {
-    given().accept(ContentType.XML).get(baseUrl + "/users/0").then()
-        .contentType(isEmptyString())
-        .statusCode(HttpStatus.SC_NOT_FOUND)
-        .body(isEmptyString());
+  public void findUserByLastName_noResults() {
+    String searchUrl = "/users/search/findByLastName?lastName=Lensherr";
+    Response response = given().accept(ContentType.JSON).get(searchUrl);
+
+    response.then()
+        .contentType(ContentType.JSON)
+        .statusCode(HttpStatus.SC_OK)
+        .body("_embedded.users", hasSize(0))
+        .body("_links.self.href", equalTo(baseUrl + searchUrl));
   }
 
   @Test
   public void findUserByLastName_singleResult() {
-    String searchUrl = baseUrl + "/users/search/findByLastName?lastName=Four";
+    String searchUrl = "/users/search/findByLastName?lastName=Xavier";
     Response response = given().accept(ContentType.JSON).get(searchUrl);
 
     response.then()
@@ -109,34 +176,22 @@ public class UserTests extends AbstractIntegrationTests {
         .body("_embedded.users", hasSize(1))
         .body("_links.self.href", equalTo(baseUrl + searchUrl));
 
-    assertEmbeddedUser(response, 0, "4", "User", "Four");
+    assertEmbeddedResource(response, User.class, 0, "1", "Charles", "Xavier");
   }
 
   @Test
   public void findUserByLastName_multipleResults() {
-    String searchUrl = baseUrl + "/users/search/findByLastName?lastName=One";
+    String searchUrl = "/users/search/findByLastName?lastName=Summers";
     Response response = given().accept(ContentType.JSON).get(searchUrl);
 
     response.then()
         .contentType(ContentType.JSON)
         .statusCode(HttpStatus.SC_OK)
-        .body("_embedded.users", hasSize(3))
+        .body("_embedded.users", hasSize(2))
         .body("_links.self.href", equalTo(baseUrl + searchUrl));
 
-    assertEmbeddedUser(response, 0, "1", "User", "One");
-    assertEmbeddedUser(response, 1, "2", "User", "One");
-    assertEmbeddedUser(response, 2, "3", "Another", "One");
-  }
-
-  private void assertEmbeddedUser(Response response, int index, String id, String firstName, String lastName) {
-    String userJsonPath = "_embedded.users[" + index + "]";
-    String userUrl = baseUrl + "/users/" + id;
-
-    response.then()
-        .body(userJsonPath + ".firstName", equalTo(firstName))
-        .body(userJsonPath + ".lastName", equalTo(lastName))
-        .body(userJsonPath + "._links.self.href", equalTo(userUrl))
-        .body(userJsonPath + "._links.user.href", equalTo(userUrl));
+    assertEmbeddedResource(response, User.class, 0, "2", "Scott", "Summers");
+    assertEmbeddedResource(response, User.class, 1, "3", "Alex", "Summers");
   }
 
 }
