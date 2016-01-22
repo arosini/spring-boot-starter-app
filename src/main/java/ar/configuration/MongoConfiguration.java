@@ -9,6 +9,12 @@ import org.springframework.data.mongodb.config.EnableMongoAuditing;
 import org.springframework.data.rest.core.event.ValidatingRepositoryEventListener;
 import org.springframework.data.rest.webmvc.config.RepositoryRestMvcConfiguration;
 
+/**
+ * Configuration for MongoDB repositories.
+ * 
+ * @author adam
+ *
+ */
 @Configuration
 @EnableMongoAuditing
 public class MongoConfiguration extends RepositoryRestMvcConfiguration {

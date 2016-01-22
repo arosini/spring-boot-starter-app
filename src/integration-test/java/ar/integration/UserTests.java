@@ -176,7 +176,7 @@ public class UserTests extends AbstractIntegrationTests {
         .body("_embedded.users", hasSize(1))
         .body("_links.self.href", equalTo(baseUrl + searchUrl));
 
-    assertEmbeddedResource(response, User.class, 0, "1", "Charles", "Xavier");
+    assertEmbeddedUser(response, 0, "1", "Charles", "Xavier", "Professor X");
   }
 
   @Test
@@ -190,8 +190,20 @@ public class UserTests extends AbstractIntegrationTests {
         .body("_embedded.users", hasSize(2))
         .body("_links.self.href", equalTo(baseUrl + searchUrl));
 
-    assertEmbeddedResource(response, User.class, 0, "2", "Scott", "Summers");
-    assertEmbeddedResource(response, User.class, 1, "3", "Alex", "Summers");
+    assertEmbeddedUser(response, 0, "2", "Scott", "Summers", "Cyclops");
+    assertEmbeddedUser(response, 1, "3", "Alex", "Summers", "Havok");
+  }
+
+  private void assertEmbeddedUser(Response response, int index, String id, String firstName, String lastName,
+      String username) {
+    String userJsonPath = "_embedded.users[" + index + "].";
+
+    response.then()
+        .body(userJsonPath + "firstName", equalTo(firstName))
+        .body(userJsonPath + "lastName", equalTo(lastName))
+        .body(userJsonPath + "username", equalTo(username));
+
+    validateCommonFields(response, userJsonPath, User.class, id);
   }
 
 }

@@ -25,7 +25,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 /**
  * Base integration test class which all integration test classes should extend.
  * 
- * @author rosinia
+ * @author adam
  *
  */
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -75,18 +75,6 @@ public abstract class AbstractIntegrationTests {
         .body(jsonPath + "lastModifiedDate", notNullValue())
         .body(jsonPath + "_links.self.href", linkMatcher)
         .body(jsonPath + "_links." + resourceType + ".href", linkMatcher);
-  }
-
-  protected void assertEmbeddedResource(Response response, Class<? extends Resource> resourceClass, int index,
-      String id, String firstName, String lastName) {
-    String resourceTypePlural = English.plural(resourceClass.getSimpleName().toLowerCase());
-    String userJsonPath = "_embedded." + resourceTypePlural + "[" + index + "].";
-
-    response.then()
-        .body(userJsonPath + "firstName", equalTo(firstName))
-        .body(userJsonPath + "lastName", equalTo(lastName));
-
-    validateCommonFields(response, userJsonPath, User.class, id);
   }
 
   private void createTestUsers() {

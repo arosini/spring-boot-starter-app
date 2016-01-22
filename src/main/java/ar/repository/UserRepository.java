@@ -7,8 +7,14 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
+/**
+ * Manipulates {@link User} resources in the database.
+ * 
+ * @author adam
+ *
+ */
 public interface UserRepository extends MongoRepository<User, String> {
 
-  List<User> findByLastName(@Param("lastName") String lastName);
+  public List<User> findByLastName(@Param("lastName") String lastName);
 
 }

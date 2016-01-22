@@ -7,6 +7,12 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 
+/**
+ * Validates a {@link User} model.
+ * 
+ * @author adam
+ *
+ */
 @Component
 public class UserValidator implements Validator {
 

@@ -13,7 +13,7 @@ import org.springframework.data.annotation.Version;
 import java.util.Date;
 
 /**
- * Defines fields found in all models.
+ * Defines properties found in all models.
  * 
  * @author adam
  *
