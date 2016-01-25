@@ -1,14 +1,14 @@
 package ar.model.validation;
 
-import ar.model.User;
-
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 
+import ar.entity.User;
+
 /**
- * Validates a {@link User} model.
+ * Validates a {@link User} entity.
  * 
  * @author adam
  *

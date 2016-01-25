@@ -1,8 +1,7 @@
-package ar.model;
+package ar.entity;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import java.util.Date;
+
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
@@ -10,10 +9,12 @@ import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.annotation.Version;
 
-import java.util.Date;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 /**
- * Defines properties found in all models.
+ * Defines properties found in all entities.
  * 
  * @author adam
  *
@@ -21,13 +22,13 @@ import java.util.Date;
 @Data
 @EqualsAndHashCode
 @ToString
-public abstract class Resource {
+public abstract class Entity {
 
   /**
    * The Resource's unique identifier.
    */
   @Id
-  private String id;
+  private Long id;
 
   /**
    * The version of this Resource.

@@ -1,6 +1,8 @@
 package ar.model;
 
 import com.google.common.reflect.ClassPath;
+
+import ar.entity.Entity;
 import javassist.CannotCompileException;
 import javassist.ClassPool;
 import javassist.CtClass;
@@ -37,7 +39,7 @@ public class ModelTests {
       int modifiers = clazz.getModifiers();
 
       // Skip interfaces and non-model classes (such as this test class)
-      if (Modifier.isInterface(modifiers) || !(clazz.isAssignableFrom(Resource.class))) {
+      if (Modifier.isInterface(modifiers) || !(clazz.isAssignableFrom(Entity.class))) {
         continue;
       }
 

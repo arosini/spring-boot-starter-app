@@ -5,13 +5,6 @@ import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.Matchers.startsWith;
 
-import ar.SpringBootStarterApplication;
-import ar.model.Resource;
-import ar.model.User;
-import ar.repository.UserRepository;
-
-import com.jayway.restassured.RestAssured;
-import com.jayway.restassured.response.Response;
 import org.atteo.evo.inflector.English;
 import org.hamcrest.Matcher;
 import org.junit.Before;
@@ -21,6 +14,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.boot.test.WebIntegrationTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import com.jayway.restassured.RestAssured;
+import com.jayway.restassured.response.Response;
+
+import ar.SpringBootStarterApplication;
+import ar.entity.Entity;
+import ar.entity.User;
+import ar.repository.UserRepository;
 
 /**
  * Base integration test class which all integration test classes should extend.
@@ -53,14 +54,19 @@ public abstract class AbstractIntegrationTests {
   }
 
   /**
-   * Validates a response resource's common fields such as audit fields and links.
+   * Validates a response resource's common fields such as audit fields and
+   * links.
    * 
-   * @param response The response containing the resource.
-   * @param jsonPath The path to the resource within the response. Should not be null.
-   * @param resourceClass The POJO class of the resource to validate.
-   * @param resourceId The ID of the resource to the validate. Ignored if null.
+   * @param response
+   *          The response containing the resource.
+   * @param jsonPath
+   *          The path to the resource within the response. Should not be null.
+   * @param resourceClass
+   *          The POJO class of the resource to validate.
+   * @param resourceId
+   *          The ID of the resource to the validate. Ignored if null.
    */
-  protected void validateCommonFields(Response response, String jsonPath, Class<? extends Resource> resourceClass,
+  protected void validateCommonFields(Response response, String jsonPath, Class<? extends Entity> resourceClass,
       String resourceId) {
     String resourceType = resourceClass.getSimpleName().toLowerCase();
     String resourceClassUrl = baseUrl + "/" + English.plural(resourceType) + "/";
@@ -78,12 +84,12 @@ public abstract class AbstractIntegrationTests {
   }
 
   private void createTestUsers() {
-    createTestUser("1", "Charles", "Xavier", "Professor X");
-    createTestUser("2", "Scott", "Summers", "Cyclops");
-    createTestUser("3", "Alex", "Summers", "Havok");
+    createTestUser(Long.valueOf(1), "Charles", "Xavier", "Professor X");
+    createTestUser(Long.valueOf(2), "Scott", "Summers", "Cyclops");
+    createTestUser(Long.valueOf(3), "Alex", "Summers", "Havok");
   }
 
-  private void createTestUser(String id, String firstName, String lastName, String username) {
+  private void createTestUser(Long id, String firstName, String lastName, String username) {
     User user = new User();
     user.setId(id);
     user.setFirstName(firstName);

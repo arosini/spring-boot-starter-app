@@ -7,13 +7,14 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.isEmptyString;
 import static org.hamcrest.Matchers.nullValue;
 
-import ar.model.User;
-
-import com.jayway.restassured.http.ContentType;
-import com.jayway.restassured.response.Response;
 import org.apache.http.HttpStatus;
 import org.junit.Before;
 import org.junit.Test;
+
+import com.jayway.restassured.http.ContentType;
+import com.jayway.restassured.response.Response;
+
+import ar.entity.User;
 
 public class UserTests extends AbstractIntegrationTests {
 
@@ -35,6 +36,8 @@ public class UserTests extends AbstractIntegrationTests {
   public void createUser() {
     Response response = given().body(user).contentType(ContentType.JSON).accept(ContentType.JSON).post("/users");
 
+    System.out.println(response.getHeaders().asList());
+
     response.then()
         .contentType(ContentType.JSON)
         .statusCode(HttpStatus.SC_CREATED)
@@ -46,7 +49,7 @@ public class UserTests extends AbstractIntegrationTests {
   }
 
   @Test
-  public void createUser_nullNonRequiredProperties() {
+  public void createUser_sparseProperties() {
     user.setFirstName(null);
     user.setLastName(null);
 
@@ -90,14 +93,14 @@ public class UserTests extends AbstractIntegrationTests {
 
   @Test
   public void createUser_whitespaceOnlyUsername() {
-    user.setUsername(" ");
+    user.setUsername("  ");
 
     given().body(user).contentType(ContentType.JSON).accept(ContentType.JSON).post("/users").then()
         .contentType(ContentType.JSON)
         .statusCode(HttpStatus.SC_BAD_REQUEST)
         .body("errors[0].entity", equalTo("User"))
         .body("errors[0].message", equalTo("Username must be present"))
-        .body("errors[0].invalidValue", equalTo(" "))
+        .body("errors[0].invalidValue", equalTo("  "))
         .body("errors[0].property", equalTo("username"));
   }
 
@@ -107,10 +110,10 @@ public class UserTests extends AbstractIntegrationTests {
 
     given().body(user).contentType(ContentType.JSON).accept(ContentType.JSON).post("/users").then()
         .contentType(ContentType.JSON)
-        .statusCode(HttpStatus.SC_BAD_REQUEST)
+        .statusCode(HttpStatus.SC_CONFLICT)
         .body("errors[0].entity", equalTo("User"))
         .body("errors[0].message", equalTo("Username must be unique"))
-        .body("errors[0].invalidValue", equalTo(""))
+        .body("errors[0].invalidValue", equalTo("Professor X"))
         .body("errors[0].property", equalTo("username"));
   }
 
@@ -182,6 +185,21 @@ public class UserTests extends AbstractIntegrationTests {
   @Test
   public void findUserByLastName_multipleResults() {
     String searchUrl = "/users/search/findByLastName?lastName=Summers";
+    Response response = given().accept(ContentType.JSON).get(searchUrl);
+
+    response.then()
+        .contentType(ContentType.JSON)
+        .statusCode(HttpStatus.SC_OK)
+        .body("_embedded.users", hasSize(2))
+        .body("_links.self.href", equalTo(baseUrl + searchUrl));
+
+    assertEmbeddedUser(response, 0, "2", "Scott", "Summers", "Cyclops");
+    assertEmbeddedUser(response, 1, "3", "Alex", "Summers", "Havok");
+  }
+
+  @Test
+  public void findUserByNonExposedProperty() {
+    String searchUrl = "/users/search/findByFirstName?lastName=Summers";
     Response response = given().accept(ContentType.JSON).get(searchUrl);
 
     response.then()
