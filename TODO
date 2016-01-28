@@ -1,8 +1,8 @@
 High Priority:
-- CREATE integration tests (POST)
-- UPDATE integration tests (PATCH)
 - REPLACE integration tests (PUT)
 - DELETE integration tests (DELETE)
+- /users endpoint test
+- Other standard endpoint tests
 
 - Change management context to /admin
 - HEALTH endpoint tests
@@ -15,6 +15,8 @@ High Priority:
 - Populate README
 
 Low Priority:
+- Page / Sort / Count parameter tests
+- Distinguish in response between URL not found vs. resource not found
 - Increase code analysis levels
 - Separate internal IDS from external REST endpoint??
 - Consolidate checks/reports (checkStyle, Jacoco, PMD, Findbugs) into single index page
