@@ -12,6 +12,8 @@ import org.junit.Test;
 
 public class UserTests extends AbstractIntegrationTests {
 
+  private static final String USERS_URL = "/users";
+
   private User user;
 
   @Override
@@ -22,6 +24,84 @@ public class UserTests extends AbstractIntegrationTests {
     user.setFirstName("Kurt");
     user.setLastName("Wagner");
     user.setUsername("Nightcrawler");
+  }
+
+  //////////////////
+  // Resource API //
+  //////////////////
+
+  @Test
+  public void checkUsersApi() {
+    response = given().head("/users");
+    assertNoContentResponse();
+  }
+
+  @Test
+  public void getUsersApi() {
+    response = given().accept(ContentType.JSON).get("/users");
+
+    assertOkResponse();
+
+    assertUserInResponse(0, "1", "Charles", "Xavier", "Professor X");
+    assertUserInResponse(1, "2", "Scott", "Summers", "Cyclops");
+    assertUserInResponse(2, "3", "Alex", "Summers", "Havok");
+
+    response.then()
+        .body("_links.self.href", equalTo(baseUrl + "/users"))
+        .body("_links.profile.href", equalTo(baseUrl + "/profile/users"))
+        .body("_links.search.href", equalTo(baseUrl + "/users/search"))
+        .body("page.size", equalTo(20))
+        .body("page.totalElements", equalTo(3))
+        .body("page.totalPages", equalTo(1))
+        .body("page.number", equalTo(0));
+  }
+
+  @Test
+  public void checkUsersProfile() {
+    response = given().head("/profile/users");
+    assertNoContentResponse();
+  }
+
+  @Test
+  public void getUsersProfile() {
+    response = given().accept(ContentType.JSON).get("/profile/users");
+    assertOkResponse();
+    response.then()
+        .body("alps.version", equalTo("1.0"))
+        .body("alps.descriptors[0].id", equalTo("user-representation"))
+        .body("alps.descriptors[0].href", equalTo(baseUrl + "/profile/users"))
+        .body("alps.descriptors[0].descriptors[0].name", equalTo("firstName"))
+        .body("alps.descriptors[0].descriptors[1].name", equalTo("lastName"))
+        .body("alps.descriptors[0].descriptors[2].name", equalTo("username"))
+        .body("alps.descriptors[0].descriptors[3].name", equalTo("version"))
+        .body("alps.descriptors[0].descriptors[4].name", equalTo("createdBy"))
+        .body("alps.descriptors[0].descriptors[5].name", equalTo("createdDate"))
+        .body("alps.descriptors[0].descriptors[6].name", equalTo("lastModifiedBy"))
+        .body("alps.descriptors[0].descriptors[7].name", equalTo("lastModifiedDate"));
+  }
+
+  @Test
+  public void checkGetUser() {
+    response = given().head("/users/1");
+    assertNoContentResponse();
+  }
+
+  @Test
+  public void checkGetUser_notFound() {
+    response = given().head("/users/0");
+    assertNotFoundResponse();
+  }
+
+  @Test
+  public void checkSearchUsers() {
+    response = given().head("/users/search/findByLastName");
+    assertNoContentResponse();
+  }
+
+  @Test
+  public void checkSearchUsers_notFound() {
+    response = given().head("/users/search/findByFirstName");
+    assertNotFoundResponse();
   }
 
   ///////////////////////////////////
@@ -173,9 +253,7 @@ public class UserTests extends AbstractIntegrationTests {
 
   @Test
   public void getUser() {
-    String userId = "1";
-
-    response = given().accept(ContentType.JSON).get("/users/" + userId);
+    response = given().accept(ContentType.JSON).get("/users/1");
     assertOkResponse();
     assertUserInResponse("Charles", "Xavier", "Professor X");
   }
@@ -197,14 +275,6 @@ public class UserTests extends AbstractIntegrationTests {
   //////////////////////////////////
 
   @Test
-  public void findUserByLastName_noResults() {
-    String searchUrl = "/users/search/findByLastName?lastName=Lensherr";
-
-    response = given().accept(ContentType.JSON).get(searchUrl);
-    assertSearchResponse(searchUrl, 0);
-  }
-
-  @Test
   public void findUserByLastName_singleResult() {
     String searchUrl = "/users/search/findByLastName?lastName=Xavier";
 
@@ -224,6 +294,14 @@ public class UserTests extends AbstractIntegrationTests {
   }
 
   @Test
+  public void findUserByLastName_noResults() {
+    String searchUrl = "/users/search/findByLastName?lastName=Lensherr";
+
+    response = given().accept(ContentType.JSON).get(searchUrl);
+    assertSearchResponse(searchUrl, 0);
+  }
+
+  @Test
   public void findUserByLastName_mediaTypeNotAcceptable() {
     response = given().accept(ContentType.XML).get("/users/search/findByLastName?lastName=Summers");
     assertNotAcceptableResponse();
@@ -231,9 +309,7 @@ public class UserTests extends AbstractIntegrationTests {
 
   @Test
   public void findUser_nonExposedProperty() {
-    String searchUrl = "/users/search/findByFirstName?firstName=Charles";
-
-    response = given().accept(ContentType.JSON).get(searchUrl);
+    response = given().accept(ContentType.JSON).get("/users/search/findByFirstName?firstName=Charles");
     assertNotFoundResponse();
   }
 
@@ -296,6 +372,22 @@ public class UserTests extends AbstractIntegrationTests {
   public void updateUser_unsupportedMediaType() {
     response = given().body(user).accept(ContentType.JSON).contentType(ContentType.XML).patch("/users/1");
     assertUnsupportedMediaTypeResponse();
+  }
+
+  /////////////////////////////////////
+  // Delete (Single Resource DELETE) //
+  /////////////////////////////////////
+
+  @Test
+  public void deleteUser() {
+    response = given().delete("/users/1");
+    assertNoContentResponse();
+  }
+
+  @Test
+  public void deleteUser_notFound() {
+    response = given().delete("/users/0");
+    assertNotFoundResponse();
   }
 
   /////////////

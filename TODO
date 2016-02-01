@@ -1,16 +1,8 @@
 High Priority:
-- REPLACE integration tests (PUT)
-- DELETE integration tests (DELETE)
-- /users endpoint test
-- Other standard endpoint tests
-
-- Change management context to /admin
 - HEALTH endpoint tests
 - INFO endpoint tests
 
-- Add model validation (beforeCreate/beforeSave user validator, error mesasges, Unit tests, integration tests)
 - Add event listeners (strip fields) (http://docs.spring.io/spring-data/rest/docs/current/reference/html/#events.application-listener)
-- Add request validation
 - Add Swagger
 - Populate README
 
@@ -23,4 +15,5 @@ Low Priority:
 - Add CPD
 - Make reports look nicer
 - Fail build on less than 100% code coverage
+- Pull out magic strings in tests
 - Dockerize

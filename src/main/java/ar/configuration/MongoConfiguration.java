@@ -1,6 +1,6 @@
 package ar.configuration;
 
-import ar.model.validation.UserValidator;
+import ar.entity.validation.UserValidator;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -122,32 +122,14 @@ public abstract class AbstractIntegrationTests {
         .statusCode(HttpStatus.SC_CREATED);
   }
 
-  // /**
-  // * Asserts the last response had a status of 200, no content type and no body.
-  // */
-  // protected void assertEmptyOkResponse() {
-  // response.then()
-  // .contentType(isEmptyString())
-  // .statusCode(HttpStatus.SC_OK)
-  // .body(isEmptyString());
-  // }
-
   /**
-   * Asserts the last response contained the specified number of results, the correct self link, a status of 200 and a
-   * content type of JSON.
-   * 
-   * @param searchUrl The URL of the search which generated the last response.
+   * Asserts the last response had a status of 200, no content type and no body.
    */
-  protected void assertSearchResponse(String searchUrl, int numResults) {
-    Pattern pattern = Pattern.compile("/(.*?)/search");
-    java.util.regex.Matcher matcher = pattern.matcher(searchUrl);
-    matcher.find();
-    String pluralEntity = matcher.group(1);
-
-    assertOkResponse();
+  protected void assertNoContentResponse() {
     response.then()
-        .body("_embedded." + pluralEntity, hasSize(numResults))
-        .body("_links.self.href", equalTo(baseUrl + searchUrl));
+        .contentType(isEmptyString())
+        .statusCode(HttpStatus.SC_NO_CONTENT)
+        .body(isEmptyString());
   }
 
   /**
@@ -177,6 +159,24 @@ public abstract class AbstractIntegrationTests {
     response.then()
         .contentType(ContentType.JSON)
         .statusCode(HttpStatus.SC_OK);
+  }
+
+  /**
+   * Asserts the last response contained the specified number of results, the correct self link, a status of 200 and a
+   * content type of JSON.
+   * 
+   * @param searchUrl The URL of the search which generated the last response.
+   */
+  protected void assertSearchResponse(String searchUrl, int numResults) {
+    Pattern pattern = Pattern.compile("/(.*?)/search");
+    java.util.regex.Matcher matcher = pattern.matcher(searchUrl);
+    matcher.find();
+    String pluralEntity = matcher.group(1);
+
+    assertOkResponse();
+    response.then()
+        .body("_embedded." + pluralEntity, hasSize(numResults))
+        .body("_links.self.href", equalTo(baseUrl + searchUrl));
   }
 
   /**

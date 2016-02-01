@@ -1,4 +1,4 @@
-package ar.model.validation;
+package ar.entity.validation;
 
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
