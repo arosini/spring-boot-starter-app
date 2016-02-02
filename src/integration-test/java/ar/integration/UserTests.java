@@ -12,44 +12,156 @@ import org.junit.Test;
 
 public class UserTests extends AbstractIntegrationTests {
 
-  private static final String USERS_URL = "/users";
+  /////////////////////
+  // URL Definitions //
+  /////////////////////
+
+  private String usersUrl;
+
+  private String userUrl;
+  private String userUrlNotFound;
+
+  private String usersProfileUrl;
+
+  private String usersSearchUrl;
+  private String usersSearchByLastNameUrl;
+  private String usersSearchNotFoundUrl;
+
+  //////////////////
+  // Error Fields //
+  //////////////////
+
+  private String usernameFieldName;
+
+  //////////////////
+  // Error Values //
+  //////////////////
+
+  private String blank;
+  private String whitespace;
+  private String nullString;
+  private String nonUniqueUsername;
+
+  ////////////////////
+  // Error Messages //
+  ////////////////////
+
+  private String usernamePresentMessage;
+  private String usernameUniqueMessage;
+
+  ///////////////////
+  // Example Users //
+  ///////////////////
 
   private User user;
+  private User userWithId;
 
   @Override
   @Before
   public void before() {
     super.before();
+
+    // URLs
+    usersUrl = baseUrl + "/users";
+
+    userUrl = baseUrl + "/users/1";
+    userUrlNotFound = baseUrl + "/users/0";
+
+    usersProfileUrl = baseUrl + "/profile/users";
+
+    usersSearchUrl = usersUrl + "/search";
+    usersSearchByLastNameUrl = usersSearchUrl + "/findByLastName";
+    usersSearchNotFoundUrl = usersSearchUrl + "/findByFirstName";
+
+    // Error Fields
+    usernameFieldName = "username";
+
+    // Error Values
+    blank = "";
+    whitespace = "  ";
+    nullString = "null";
+    nonUniqueUsername = "Professor X";
+
+    // Error Messages
+    usernamePresentMessage = "Username must be present";
+    usernameUniqueMessage = "Username must be unique";
+
+    // Example Users
     user = new User();
     user.setFirstName("Kurt");
     user.setLastName("Wagner");
     user.setUsername("Nightcrawler");
+
+    userWithId = new User();
+    userWithId.setId("0");
+    userWithId.setFirstName("Hank");
+    userWithId.setLastName("McCoy");
+    userWithId.setUsername("Beast");
   }
 
-  //////////////////
-  // Resource API //
-  //////////////////
+  ////////////////////////////
+  // Check Users API (HEAD) //
+  ////////////////////////////
 
   @Test
-  public void checkUsersApi() {
-    response = given().head("/users");
+  public void checkUsers() {
+    response = given().head(usersUrl);
+    assertNoContentResponse();
+  }
+
+  // TODO: Research, possibly file a Spring Data Rest issue.
+  // @Test
+  // public void checkUsersProfile() {
+  // response = given().head(usersProfileUrl);
+  // System.out.println(response.asString());
+  // assertNoContentResponse();
+  // }
+
+  @Test
+  public void checkUser() {
+    response = given().head(userUrl);
     assertNoContentResponse();
   }
 
   @Test
+  public void checkUser_notFound() {
+    response = given().head(userUrlNotFound);
+    assertNotFoundResponse();
+  }
+
+  @Test
+  public void checkUsersSearch() {
+    response = given().head(usersSearchUrl);
+    assertNoContentResponse();
+  }
+
+  @Test
+  public void checkUsersSearch_byLastName() {
+    response = given().head(usersSearchByLastNameUrl);
+    assertNoContentResponse();
+  }
+
+  @Test
+  public void checkUserSearch_notFound() {
+    response = given().head(usersSearchNotFoundUrl);
+    assertNotFoundResponse();
+  }
+
+  ///////////////////
+  // GET Users API //
+  ///////////////////
+
+  @Test
   public void getUsersApi() {
-    response = given().accept(ContentType.JSON).get("/users");
-
+    response = given().accept(ContentType.JSON).get(usersUrl);
     assertOkResponse();
-
     assertUserInResponse(0, "1", "Charles", "Xavier", "Professor X");
     assertUserInResponse(1, "2", "Scott", "Summers", "Cyclops");
     assertUserInResponse(2, "3", "Alex", "Summers", "Havok");
-
     response.then()
-        .body("_links.self.href", equalTo(baseUrl + "/users"))
-        .body("_links.profile.href", equalTo(baseUrl + "/profile/users"))
-        .body("_links.search.href", equalTo(baseUrl + "/users/search"))
+        .body("_links.self.href", equalTo(usersUrl))
+        .body("_links.profile.href", equalTo(usersProfileUrl))
+        .body("_links.search.href", equalTo(usersSearchUrl))
         .body("page.size", equalTo(20))
         .body("page.totalElements", equalTo(3))
         .body("page.totalPages", equalTo(1))
@@ -57,19 +169,19 @@ public class UserTests extends AbstractIntegrationTests {
   }
 
   @Test
-  public void checkUsersProfile() {
-    response = given().head("/profile/users");
-    assertNoContentResponse();
+  public void getUsersApi_notAcceptable() {
+    response = given().accept(ContentType.XML).get(usersUrl);
+    assertNotAcceptableResponse();
   }
 
   @Test
   public void getUsersProfile() {
-    response = given().accept(ContentType.JSON).get("/profile/users");
+    response = given().accept(ContentType.JSON).get(usersProfileUrl);
     assertOkResponse();
     response.then()
         .body("alps.version", equalTo("1.0"))
         .body("alps.descriptors[0].id", equalTo("user-representation"))
-        .body("alps.descriptors[0].href", equalTo(baseUrl + "/profile/users"))
+        .body("alps.descriptors[0].href", equalTo(usersProfileUrl))
         .body("alps.descriptors[0].descriptors[0].name", equalTo("firstName"))
         .body("alps.descriptors[0].descriptors[1].name", equalTo("lastName"))
         .body("alps.descriptors[0].descriptors[2].name", equalTo("username"))
@@ -80,28 +192,27 @@ public class UserTests extends AbstractIntegrationTests {
         .body("alps.descriptors[0].descriptors[7].name", equalTo("lastModifiedDate"));
   }
 
+  // TODO: Research, possibly file a Spring Data Rest issue.
+  // @Test
+  // public void getUsersProfile_notAcceptable() {
+  // response = given().accept(ContentType.XML).get(usersProfileUrl);
+  // assertNotAcceptableResponse();
+  // }
+
   @Test
-  public void checkGetUser() {
-    response = given().head("/users/1");
-    assertNoContentResponse();
+  public void getUsersSearch() {
+    response = given().get(usersSearchUrl);
+    assertOkResponse();
+    response.then()
+        .body("_links.findByLastName.href", equalTo(usersSearchByLastNameUrl + "{?lastName}"))
+        .body("_links.findByLastName.templated", equalTo(true))
+        .body("_links.self.href", equalTo(usersSearchUrl));
   }
 
   @Test
-  public void checkGetUser_notFound() {
-    response = given().head("/users/0");
-    assertNotFoundResponse();
-  }
-
-  @Test
-  public void checkSearchUsers() {
-    response = given().head("/users/search/findByLastName");
-    assertNoContentResponse();
-  }
-
-  @Test
-  public void checkSearchUsers_notFound() {
-    response = given().head("/users/search/findByFirstName");
-    assertNotFoundResponse();
+  public void getUserSearch_notAcceptable() {
+    response = given().accept(ContentType.XML).get(usersSearchUrl);
+    assertNotAcceptableResponse();
   }
 
   ///////////////////////////////////
@@ -110,7 +221,7 @@ public class UserTests extends AbstractIntegrationTests {
 
   @Test
   public void createUser() {
-    response = given().body(user).contentType(ContentType.JSON).accept(ContentType.JSON).post("/users");
+    response = given().body(user).contentType(ContentType.JSON).accept(ContentType.JSON).post(usersUrl);
     assertCreatedResponse();
     assertUserInResponse(user);
   }
@@ -120,7 +231,7 @@ public class UserTests extends AbstractIntegrationTests {
     user.setFirstName(null);
     user.setLastName(null);
 
-    response = given().body(user).contentType(ContentType.JSON).accept(ContentType.JSON).post("/users");
+    response = given().body(user).contentType(ContentType.JSON).accept(ContentType.JSON).post(usersUrl);
     assertCreatedResponse();
     assertUserInResponse(user);
   }
@@ -129,44 +240,44 @@ public class UserTests extends AbstractIntegrationTests {
   public void createUser_nullUsername() {
     user.setUsername(null);
 
-    response = given().body(user).contentType(ContentType.JSON).accept(ContentType.JSON).post("/users");
-    assertErrorResponse(HttpStatus.SC_BAD_REQUEST, User.class, "Username must be present", "null", "username");
+    response = given().body(user).contentType(ContentType.JSON).accept(ContentType.JSON).post(usersUrl);
+    assertErrorResponse(HttpStatus.SC_BAD_REQUEST, User.class, usernamePresentMessage, nullString, usernameFieldName);
   }
 
   @Test
   public void createUser_blankUsername() {
-    user.setUsername("");
+    user.setUsername(blank);
 
-    response = given().body(user).contentType(ContentType.JSON).accept(ContentType.JSON).post("/users");
-    assertErrorResponse(HttpStatus.SC_BAD_REQUEST, User.class, "Username must be present", "", "username");
+    response = given().body(user).contentType(ContentType.JSON).accept(ContentType.JSON).post(usersUrl);
+    assertErrorResponse(HttpStatus.SC_BAD_REQUEST, User.class, usernamePresentMessage, blank, usernameFieldName);
   }
 
   @Test
   public void createUser_whitespaceOnlyUsername() {
-    user.setUsername("  ");
+    user.setUsername(whitespace);
 
-    response = given().body(user).contentType(ContentType.JSON).accept(ContentType.JSON).post("/users");
-    assertErrorResponse(HttpStatus.SC_BAD_REQUEST, User.class, "Username must be present", "  ", "username");
+    response = given().body(user).contentType(ContentType.JSON).accept(ContentType.JSON).post(usersUrl);
+    assertErrorResponse(HttpStatus.SC_BAD_REQUEST, User.class, usernamePresentMessage, whitespace, usernameFieldName);
   }
 
   @Test
   public void createUser_nonUniqueUsername() {
-    user.setUsername("Professor X");
+    user.setUsername(nonUniqueUsername);
 
-    response = given().body(user).contentType(ContentType.JSON).accept(ContentType.JSON).post("/users");
-    assertErrorResponse(HttpStatus.SC_CONFLICT, User.class, "Username must be unique", "Professor X",
-        "username");
+    response = given().body(user).contentType(ContentType.JSON).accept(ContentType.JSON).post(usersUrl);
+    assertErrorResponse(HttpStatus.SC_CONFLICT, User.class, usernameUniqueMessage, nonUniqueUsername,
+        usernameFieldName);
   }
 
   @Test
   public void createUser_mediaTypeNotAcceptable() {
-    response = given().body(user).contentType(ContentType.JSON).accept(ContentType.XML).post("/users");
+    response = given().body(user).contentType(ContentType.JSON).accept(ContentType.XML).post(usersUrl);
     assertNotAcceptableResponse();
   }
 
   @Test
   public void createUser_unsupportedMediaType() {
-    response = given().body(user).contentType(ContentType.XML).accept(ContentType.JSON).post("/users");
+    response = given().body(user).contentType(ContentType.XML).accept(ContentType.JSON).post(usersUrl);
     assertUnsupportedMediaTypeResponse();
   }
 
@@ -176,74 +287,63 @@ public class UserTests extends AbstractIntegrationTests {
 
   @Test
   public void createUser_specificId() {
-    user.setId("0");
-
-    response = given().body(user).contentType(ContentType.JSON).accept(ContentType.JSON).put("/users/0");
+    response = given().body(userWithId).contentType(ContentType.JSON).accept(ContentType.JSON).put(userUrlNotFound);
     assertCreatedResponse();
-    assertUserInResponse(user);
+    assertUserInResponse(userWithId);
   }
 
   @Test
   public void createUser_specificId_sparseProperties() {
-    user.setId("0");
-    user.setFirstName(null);
-    user.setLastName(null);
+    userWithId.setFirstName(null);
+    userWithId.setLastName(null);
 
-    response = given().body(user).contentType(ContentType.JSON).accept(ContentType.JSON).put("/users/0");
+    response = given().body(userWithId).contentType(ContentType.JSON).accept(ContentType.JSON).put(userUrlNotFound);
     assertCreatedResponse();
-    assertUserInResponse(user);
+    assertUserInResponse(userWithId);
   }
 
   @Test
   public void createUser_specificId_nullUsername() {
-    user.setId("0");
-    user.setUsername(null);
+    userWithId.setUsername(null);
 
-    response = given().body(user).contentType(ContentType.JSON).accept(ContentType.JSON).put("/users/0");
-    assertErrorResponse(HttpStatus.SC_BAD_REQUEST, User.class, "Username must be present", "null", "username");
+    response = given().body(userWithId).contentType(ContentType.JSON).accept(ContentType.JSON).put(userUrlNotFound);
+    assertErrorResponse(HttpStatus.SC_BAD_REQUEST, User.class, usernamePresentMessage, "null", usernameFieldName);
   }
 
   @Test
   public void createUser_specificId_blankUsername() {
-    user.setId("0");
-    user.setUsername("");
+    userWithId.setUsername(blank);
 
-    response = given().body(user).contentType(ContentType.JSON).accept(ContentType.JSON).put("/users/0");
-    assertErrorResponse(HttpStatus.SC_BAD_REQUEST, User.class, "Username must be present", "", "username");
+    response = given().body(userWithId).contentType(ContentType.JSON).accept(ContentType.JSON).put(userUrlNotFound);
+    assertErrorResponse(HttpStatus.SC_BAD_REQUEST, User.class, usernamePresentMessage, blank, usernameFieldName);
   }
 
   @Test
   public void createUser_specificId_whitespaceOnlyUsername() {
-    user.setId("0");
-    user.setUsername("  ");
+    userWithId.setUsername(whitespace);
 
-    response = given().body(user).contentType(ContentType.JSON).accept(ContentType.JSON).put("/users/0");
-    assertErrorResponse(HttpStatus.SC_BAD_REQUEST, User.class, "Username must be present", "  ", "username");
+    response = given().body(userWithId).contentType(ContentType.JSON).accept(ContentType.JSON).put(userUrlNotFound);
+    assertErrorResponse(HttpStatus.SC_BAD_REQUEST, User.class, usernamePresentMessage, whitespace, usernameFieldName);
   }
 
   @Test
   public void createUser_specificId_nonUniqueUsername() {
-    user.setId("0");
-    user.setUsername("Professor X");
+    userWithId.setUsername(nonUniqueUsername);
 
-    response = given().body(user).contentType(ContentType.JSON).accept(ContentType.JSON).put("/users/0");
-    assertErrorResponse(HttpStatus.SC_CONFLICT, User.class, "Username must be unique", "Professor X",
-        "username");
+    response = given().body(userWithId).contentType(ContentType.JSON).accept(ContentType.JSON).put(userUrlNotFound);
+    assertErrorResponse(HttpStatus.SC_CONFLICT, User.class, usernameUniqueMessage, nonUniqueUsername,
+        usernameFieldName);
   }
 
   @Test
   public void createUser_specificId_mediaTypeNotAcceptable() {
-    user.setId("0");
-
-    response = given().body(user).contentType(ContentType.JSON).accept(ContentType.XML).put("/users/0");
+    response = given().body(userWithId).contentType(ContentType.JSON).accept(ContentType.XML).put(userUrlNotFound);
     assertNotAcceptableResponse();
   }
 
   @Test
   public void createUser_specificId_unsupportedMediaType() {
-    user.setId("0");
-
-    response = given().body(user).contentType(ContentType.XML).accept(ContentType.JSON).put("/users/0");
+    response = given().body(userWithId).contentType(ContentType.XML).accept(ContentType.JSON).put(userUrlNotFound);
     assertUnsupportedMediaTypeResponse();
   }
 
@@ -253,20 +353,20 @@ public class UserTests extends AbstractIntegrationTests {
 
   @Test
   public void getUser() {
-    response = given().accept(ContentType.JSON).get("/users/1");
+    response = given().accept(ContentType.JSON).get(userUrl);
     assertOkResponse();
     assertUserInResponse("Charles", "Xavier", "Professor X");
   }
 
   @Test
   public void getUser_notFound() {
-    response = given().accept(ContentType.JSON).get("/users/0");
+    response = given().accept(ContentType.JSON).get(userUrlNotFound);
     assertNotFoundResponse();
   }
 
   @Test
   public void getUser_mediaTypeNotAcceptable() {
-    response = given().accept(ContentType.XML).get("/users/1");
+    response = given().accept(ContentType.XML).get(userUrl);
     assertNotAcceptableResponse();
   }
 
@@ -275,8 +375,8 @@ public class UserTests extends AbstractIntegrationTests {
   //////////////////////////////////
 
   @Test
-  public void findUserByLastName_singleResult() {
-    String searchUrl = "/users/search/findByLastName?lastName=Xavier";
+  public void findUsersByLastName_singleResult() {
+    String searchUrl = usersSearchByLastNameUrl + "?lastName=Xavier";
 
     response = given().accept(ContentType.JSON).get(searchUrl);
     assertSearchResponse(searchUrl, 1);
@@ -284,8 +384,8 @@ public class UserTests extends AbstractIntegrationTests {
   }
 
   @Test
-  public void findUserByLastName_multipleResults() {
-    String searchUrl = "/users/search/findByLastName?lastName=Summers";
+  public void findUsersByLastName_multipleResults() {
+    String searchUrl = usersSearchByLastNameUrl + "?lastName=Summers";
 
     response = given().accept(ContentType.JSON).get(searchUrl);
     assertSearchResponse(searchUrl, 2);
@@ -294,22 +394,28 @@ public class UserTests extends AbstractIntegrationTests {
   }
 
   @Test
-  public void findUserByLastName_noResults() {
-    String searchUrl = "/users/search/findByLastName?lastName=Lensherr";
+  public void findUsersByLastName_noResults() {
+    String searchUrl = usersSearchByLastNameUrl + "?lastName=Lensherr";
 
     response = given().accept(ContentType.JSON).get(searchUrl);
     assertSearchResponse(searchUrl, 0);
   }
 
   @Test
+  public void findUsersByLastName_missingParameter() {
+    response = given().accept(ContentType.JSON).get(usersSearchByLastNameUrl);
+    assertSearchResponse(usersSearchByLastNameUrl, 0);
+  }
+
+  @Test
   public void findUserByLastName_mediaTypeNotAcceptable() {
-    response = given().accept(ContentType.XML).get("/users/search/findByLastName?lastName=Summers");
+    response = given().accept(ContentType.XML).get(usersSearchByLastNameUrl);
     assertNotAcceptableResponse();
   }
 
   @Test
   public void findUser_nonExposedProperty() {
-    response = given().accept(ContentType.JSON).get("/users/search/findByFirstName?firstName=Charles");
+    response = given().accept(ContentType.JSON).get(usersSearchUrl + "/findByFirstName");
     assertNotFoundResponse();
   }
 
@@ -319,14 +425,14 @@ public class UserTests extends AbstractIntegrationTests {
 
   @Test
   public void updateUser() {
-    response = given().body(user).accept(ContentType.JSON).contentType(ContentType.JSON).patch("/users/1");
+    response = given().body(user).accept(ContentType.JSON).contentType(ContentType.JSON).patch(userUrl);
     assertOkResponse();
     assertUserInResponse(user);
   }
 
   @Test
   public void updateUser_notFound() {
-    response = given().body(user).accept(ContentType.JSON).contentType(ContentType.JSON).patch("/users/0");
+    response = given().body(user).accept(ContentType.JSON).contentType(ContentType.JSON).patch(userUrlNotFound);
     assertNotFoundResponse();
   }
 
@@ -334,43 +440,44 @@ public class UserTests extends AbstractIntegrationTests {
   public void updateUser_nullUsername() {
     user.setUsername(null);
 
-    response = given().body(user).accept(ContentType.JSON).contentType(ContentType.JSON).patch("/users/1");
-    assertErrorResponse(HttpStatus.SC_BAD_REQUEST, User.class, "Username must be present", "null", "username");
+    response = given().body(user).accept(ContentType.JSON).contentType(ContentType.JSON).patch(userUrl);
+    assertErrorResponse(HttpStatus.SC_BAD_REQUEST, User.class, usernamePresentMessage, "null", usernameFieldName);
   }
 
   @Test
   public void updateUser_blankUsername() {
-    user.setUsername("");
+    user.setUsername(blank);
 
-    response = given().body(user).accept(ContentType.JSON).contentType(ContentType.JSON).patch("/users/1");
-    assertErrorResponse(HttpStatus.SC_BAD_REQUEST, User.class, "Username must be present", "", "username");
+    response = given().body(user).accept(ContentType.JSON).contentType(ContentType.JSON).patch(userUrl);
+    assertErrorResponse(HttpStatus.SC_BAD_REQUEST, User.class, usernamePresentMessage, blank, usernameFieldName);
   }
 
   @Test
   public void updateUser_whitespaceOnlyUsername() {
-    user.setUsername("  ");
+    user.setUsername(whitespace);
 
-    response = given().body(user).accept(ContentType.JSON).contentType(ContentType.JSON).patch("/users/1");
-    assertErrorResponse(HttpStatus.SC_BAD_REQUEST, User.class, "Username must be present", "  ", "username");
+    response = given().body(user).accept(ContentType.JSON).contentType(ContentType.JSON).patch(userUrl);
+    assertErrorResponse(HttpStatus.SC_BAD_REQUEST, User.class, usernamePresentMessage, whitespace, usernameFieldName);
   }
 
   @Test
   public void updateUser_nonUniqueUsername() {
-    user.setUsername("Cyclops");
+    user.setUsername(nonUniqueUsername);
 
-    response = given().body(user).accept(ContentType.JSON).contentType(ContentType.JSON).patch("/users/1");
-    assertErrorResponse(HttpStatus.SC_CONFLICT, User.class, "Username must be unique", "Cyclops", "username");
+    response = given().body(user).accept(ContentType.JSON).contentType(ContentType.JSON).patch(userUrl);
+    assertErrorResponse(HttpStatus.SC_CONFLICT, User.class, usernameUniqueMessage, nonUniqueUsername,
+        usernameFieldName);
   }
 
   @Test
   public void updateUser_mediaTypeNotAcceptable() {
-    response = given().body(user).accept(ContentType.XML).contentType(ContentType.JSON).patch("/users/1");
+    response = given().body(user).accept(ContentType.XML).contentType(ContentType.JSON).patch(userUrl);
     assertNotAcceptableResponse();
   }
 
   @Test
   public void updateUser_unsupportedMediaType() {
-    response = given().body(user).accept(ContentType.JSON).contentType(ContentType.XML).patch("/users/1");
+    response = given().body(user).accept(ContentType.JSON).contentType(ContentType.XML).patch(userUrl);
     assertUnsupportedMediaTypeResponse();
   }
 
@@ -380,18 +487,18 @@ public class UserTests extends AbstractIntegrationTests {
 
   @Test
   public void deleteUser() {
-    response = given().delete("/users/1");
+    response = given().delete(userUrl);
     assertNoContentResponse();
   }
 
   @Test
   public void deleteUser_notFound() {
-    response = given().delete("/users/0");
+    response = given().delete(userUrlNotFound);
     assertNotFoundResponse();
   }
 
   /////////////
-  // HELPERS //
+  // Helpers //
   /////////////
 
   // Use after creating a resource

@@ -12,7 +12,6 @@ import ar.entity.Entity;
 import ar.entity.User;
 import ar.repository.UserRepository;
 
-import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.http.ContentType;
 import com.jayway.restassured.response.Response;
 import org.apache.http.HttpStatus;
@@ -39,15 +38,15 @@ import java.util.regex.Pattern;
 @WebIntegrationTest
 public abstract class AbstractIntegrationTests {
 
+  /** The port the service is listening on (randomly assigned when context is initiated). **/
+  @Value("${local.server.port}")
+  private int port;
+
   /** The path and port of the service. **/
   protected String baseUrl;
 
   /** The last response received from the service. **/
   protected Response response;
-
-  /** The port the service is listening on (randomly assigned when context is initiated). **/
-  @Value("${local.server.port}")
-  private int port;
 
   /** Repository used for manipulating {@link User} resources. **/
   @Autowired
@@ -56,9 +55,8 @@ public abstract class AbstractIntegrationTests {
   /** Initializes a test by setting global information and creating test data. Called before each test. **/
   @Before
   public void before() {
-    RestAssured.port = port;
-    baseUrl = "http://localhost:" + port;
     response = null;
+    baseUrl = "http://localhost:" + port;
 
     userRepoistory.deleteAll();
     createUsers();
@@ -92,9 +90,9 @@ public abstract class AbstractIntegrationTests {
   /**
    * Asserts a response resource's common fields such as audit fields and links.
    * 
-   * @param jsonPath The path to the resource within the response. Should not be null.
+   * @param jsonPath The path to the resource within the response. Should not be null, but may be blank.
    * @param resourceClass The POJO class of the resource to validate.
-   * @param resourceId The ID of the resource to the validate. Ignored if null.
+   * @param resourceId The ID of the resource to the validate. Not used if null.
    */
   protected void assertCommonFields(String jsonPath, Class<? extends Entity> resourceClass,
       String resourceId) {
@@ -123,7 +121,7 @@ public abstract class AbstractIntegrationTests {
   }
 
   /**
-   * Asserts the last response had a status of 200, no content type and no body.
+   * Asserts the last response had a status of 204, no content type and no body.
    */
   protected void assertNoContentResponse() {
     response.then()
@@ -168,7 +166,7 @@ public abstract class AbstractIntegrationTests {
    * @param searchUrl The URL of the search which generated the last response.
    */
   protected void assertSearchResponse(String searchUrl, int numResults) {
-    Pattern pattern = Pattern.compile("/(.*?)/search");
+    Pattern pattern = Pattern.compile("[0-9]+/(.*?)/search");
     java.util.regex.Matcher matcher = pattern.matcher(searchUrl);
     matcher.find();
     String pluralEntity = matcher.group(1);
@@ -176,7 +174,7 @@ public abstract class AbstractIntegrationTests {
     assertOkResponse();
     response.then()
         .body("_embedded." + pluralEntity, hasSize(numResults))
-        .body("_links.self.href", equalTo(baseUrl + searchUrl));
+        .body("_links.self.href", equalTo(searchUrl));
   }
 
   /**
