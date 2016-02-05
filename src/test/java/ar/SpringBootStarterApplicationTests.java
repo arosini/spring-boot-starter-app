@@ -6,13 +6,19 @@ import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
+/**
+ * Tests for the {@link SpringBootStarterApplication} class.
+ * 
+ * @author adam
+ *
+ */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = SpringBootStarterApplication.class)
 @WebAppConfiguration
 public class SpringBootStarterApplicationTests {
 
   @Test
-  public void contextLoads() {
+  public void main() {
     SpringBootStarterApplication.main(new String[0]);
   }
 

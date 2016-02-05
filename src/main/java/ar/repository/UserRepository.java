@@ -1,11 +1,11 @@
 package ar.repository;
 
-import java.util.List;
+import ar.entity.User;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.repository.query.Param;
 
-import ar.entity.User;
+import java.util.List;
 
 /**
  * Manipulates {@link User} entities in the database.

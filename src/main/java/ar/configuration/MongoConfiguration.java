@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.mongodb.config.EnableMongoAuditing;
 import org.springframework.data.rest.core.event.ValidatingRepositoryEventListener;
-import org.springframework.data.rest.webmvc.config.RepositoryRestMvcConfiguration;
+import org.springframework.data.rest.webmvc.config.RepositoryRestConfigurerAdapter;
 
 /**
  * Configuration for MongoDB repositories.
@@ -17,10 +17,10 @@ import org.springframework.data.rest.webmvc.config.RepositoryRestMvcConfiguratio
  */
 @Configuration
 @EnableMongoAuditing
-public class MongoConfiguration extends RepositoryRestMvcConfiguration {
+public class MongoConfiguration extends RepositoryRestConfigurerAdapter {
 
   /**
-   * {@link AuditorAware} implementation which MongoDB uses to populate the @CreatedBy and @LastModifiedBy properties.
+   * {@link AuditorAware} implementation which MongoDB uses to populate @CreatedBy and @LastModifiedBy properties.
    * 
    * @return The auditing object for MongoDB documents.
    */
@@ -38,7 +38,7 @@ public class MongoConfiguration extends RepositoryRestMvcConfiguration {
    * Configures event listeners used for validation before saving to the database.
    */
   @Override
-  protected void configureValidatingRepositoryEventListener(ValidatingRepositoryEventListener validatingListener) {
+  public void configureValidatingRepositoryEventListener(ValidatingRepositoryEventListener validatingListener) {
     validatingListener.addValidator("beforeCreate", new UserValidator());
     validatingListener.addValidator("beforeSave", new UserValidator());
   }

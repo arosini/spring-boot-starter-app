@@ -38,27 +38,29 @@ import java.util.regex.Pattern;
 @WebIntegrationTest
 public abstract class AbstractIntegrationTests {
 
-  /** The port the service is listening on (randomly assigned when context is initiated). **/
+  /** The port the service is listening on (randomly assigned when context is initiated). */
   @Value("${local.server.port}")
   private int port;
 
-  /** The path and port of the service. **/
+  /** The location and port of the service. */
   protected String baseUrl;
 
-  /** The last response received from the service. **/
-  protected Response response;
+  /** The last response received from the service. */
+  protected Response lastResponse;
 
-  /** Repository used for manipulating {@link User} resources. **/
+  /**
+   * Manipulates {@link User} entities.
+   */
   @Autowired
-  private UserRepository userRepoistory;
+  private UserRepository userRepository;
 
-  /** Initializes a test by setting global information and creating test data. Called before each test. **/
+  /** Initializes a test by setting global information and creating test data. Called before each test. */
   @Before
   public void before() {
-    response = null;
+    lastResponse = null;
     baseUrl = "http://localhost:" + port;
 
-    userRepoistory.deleteAll();
+    userRepository.deleteAll();
     createUsers();
   }
 
@@ -69,7 +71,7 @@ public abstract class AbstractIntegrationTests {
   /**
    * Asserts the last response had a status of 400, a content type of JSON, and a body with the provided information.
    * 
-   * @param response The response containing the error.
+   * @param lastResponse The response containing the error.
    * @param status The HTTP status code of the response.
    * @param entityClass The entity class which caused the error.
    * @param message The message associated with the error.
@@ -78,7 +80,7 @@ public abstract class AbstractIntegrationTests {
    */
   protected void assertErrorResponse(int status, Class<? extends Entity> entityClass, String message,
       String invalidValue, String property) {
-    response.then()
+    lastResponse.then()
         .contentType(ContentType.JSON)
         .statusCode(status)
         .body("errors[0].entity", equalTo(entityClass.getSimpleName()))
@@ -102,7 +104,7 @@ public abstract class AbstractIntegrationTests {
     Matcher<String> linkMatcher = resourceId == null ? startsWith(resourceClassUrl)
         : equalTo(resourceClassUrl + resourceId);
 
-    response.then()
+    lastResponse.then()
         .body(jsonPath + "createdBy", nullValue())
         .body(jsonPath + "createdDate", notNullValue())
         .body(jsonPath + "lastModifiedBy", nullValue())
@@ -115,7 +117,7 @@ public abstract class AbstractIntegrationTests {
    * Asserts the last response had a status of 201 and a content type of JSON.
    */
   protected void assertCreatedResponse() {
-    response.then()
+    lastResponse.then()
         .contentType(ContentType.JSON)
         .statusCode(HttpStatus.SC_CREATED);
   }
@@ -124,7 +126,7 @@ public abstract class AbstractIntegrationTests {
    * Asserts the last response had a status of 204, no content type and no body.
    */
   protected void assertNoContentResponse() {
-    response.then()
+    lastResponse.then()
         .contentType(isEmptyString())
         .statusCode(HttpStatus.SC_NO_CONTENT)
         .body(isEmptyString());
@@ -134,7 +136,7 @@ public abstract class AbstractIntegrationTests {
    * Asserts the last response had a status of 406, no content type and no body.
    */
   protected void assertNotAcceptableResponse() {
-    response.then()
+    lastResponse.then()
         .contentType(isEmptyString())
         .statusCode(HttpStatus.SC_NOT_ACCEPTABLE)
         .body(isEmptyString());
@@ -144,7 +146,7 @@ public abstract class AbstractIntegrationTests {
    * Asserts the last response had a status of 404, no content type and no body.
    */
   protected void assertNotFoundResponse() {
-    response.then()
+    lastResponse.then()
         .contentType(isEmptyString())
         .statusCode(HttpStatus.SC_NOT_FOUND)
         .body(isEmptyString());
@@ -154,7 +156,7 @@ public abstract class AbstractIntegrationTests {
    * Asserts the last response had a status of 200 and a content type of JSON.
    */
   protected void assertOkResponse() {
-    response.then()
+    lastResponse.then()
         .contentType(ContentType.JSON)
         .statusCode(HttpStatus.SC_OK);
   }
@@ -172,7 +174,7 @@ public abstract class AbstractIntegrationTests {
     String pluralEntity = matcher.group(1);
 
     assertOkResponse();
-    response.then()
+    lastResponse.then()
         .body("_embedded." + pluralEntity, hasSize(numResults))
         .body("_links.self.href", equalTo(searchUrl));
   }
@@ -181,7 +183,7 @@ public abstract class AbstractIntegrationTests {
    * Asserts the last response had a status of 415, no content type and no body.
    */
   protected void assertUnsupportedMediaTypeResponse() {
-    response.then()
+    lastResponse.then()
         .contentType(isEmptyString())
         .statusCode(HttpStatus.SC_UNSUPPORTED_MEDIA_TYPE)
         .body(isEmptyString());
@@ -203,7 +205,7 @@ public abstract class AbstractIntegrationTests {
     user.setFirstName(firstName);
     user.setLastName(lastName);
     user.setUsername(username);
-    userRepoistory.save(user);
+    userRepository.save(user);
   }
 
 }

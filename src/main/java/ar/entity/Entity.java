@@ -23,43 +23,51 @@ import java.util.Date;
 @ToString
 public abstract class Entity {
 
-  /**
-   * The Resource's unique identifier.
-   */
+  ////////////////
+  // Properties //
+  ////////////////
+
+  /** The entity's unique identifier. */
   @Id
   private String id;
 
-  /**
-   * The version of this Resource.
-   */
+  /** The version of this entity. */
   @Version
   private Long version;
 
-  /**
-   * Who created the Resource instance.
-   */
+  /** Who created the entity. */
   @CreatedBy
   private String createdBy;
 
-  /**
-   * When the Resource instance was created.
-   */
+  /** When the entity was created. */
   @CreatedDate
   private Date createdDate;
 
-  /**
-   * Who last modified the Resource instance.
-   */
+  /** Who last modified the entity. */
   @LastModifiedBy
   private String lastModifiedBy;
 
-  /**
-   * When the Resource instance was last modified.
-   */
+  /** When the entity was last modified. */
   @LastModifiedDate
   private Date lastModifiedDate;
 
-  // Override Date getters / setters
+  /////////////
+  // Methods //
+  /////////////
+
+  protected static Date cloneDate(Date date) {
+    Date clone = null;
+
+    if (date != null) {
+      clone = (Date) date.clone();
+    }
+
+    return clone;
+  }
+
+  ///////////////////////////////
+  // Getter / Setter Overrides //
+  ///////////////////////////////
 
   public Date getCreatedDate() {
     return cloneDate(createdDate);
@@ -75,18 +83,6 @@ public abstract class Entity {
 
   public void setLastModifiedDate(Date lastModifiedDate) {
     this.lastModifiedDate = cloneDate(lastModifiedDate);
-  }
-
-  // Utility methods
-
-  protected Date cloneDate(Date date) {
-    Date clone = null;
-
-    if (date != null) {
-      clone = (Date) date.clone();
-    }
-
-    return clone;
   }
 
 }

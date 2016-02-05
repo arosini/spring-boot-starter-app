@@ -1,8 +1,6 @@
-package ar.model;
+package ar.entity;
 
 import com.google.common.reflect.ClassPath;
-
-import ar.entity.Entity;
 import javassist.CannotCompileException;
 import javassist.ClassPool;
 import javassist.CtClass;
@@ -18,9 +16,14 @@ import org.meanbean.test.BeanTester;
 
 import java.lang.reflect.Modifier;
 
-public class ModelTests {
-
-  private static final String MODEL_PACKAGE = "ar.model";
+/**
+ * Tests entity methods provided by Lombok (getters, setters, equals, hashcode, etc...) as well as methods found in the
+ * {@link Entity} class.
+ * 
+ * @author adam
+ *
+ */
+public class EntityTests {
 
   private BeanTester beanTester;
 
@@ -30,16 +33,17 @@ public class ModelTests {
   }
 
   @Test
-  public void testModels() throws Exception {
+  public void testEntities() throws Exception {
     final ClassLoader loader = Thread.currentThread().getContextClassLoader();
 
-    // Loop through classes in the model package
-    for (final ClassPath.ClassInfo info : ClassPath.from(loader).getTopLevelClassesRecursive(MODEL_PACKAGE)) {
+    // Loop through classes in this package
+    for (final ClassPath.ClassInfo info : ClassPath.from(loader)
+        .getTopLevelClassesRecursive(this.getClass().getPackage().getName())) {
       final Class<?> clazz = info.load();
       int modifiers = clazz.getModifiers();
 
-      // Skip interfaces and non-model classes (such as this test class)
-      if (Modifier.isInterface(modifiers) || !(clazz.isAssignableFrom(Entity.class))) {
+      // Skip interfaces and non-entity classes (such as this test class)
+      if (Modifier.isInterface(modifiers) || !(Entity.class.isAssignableFrom(clazz))) {
         continue;
       }
 

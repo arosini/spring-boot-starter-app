@@ -1,13 +1,12 @@
-High Priority:
-- HEALTH endpoint tests
-- INFO endpoint tests
-
-- Add event listeners (strip fields) (http://docs.spring.io/spring-data/rest/docs/current/reference/html/#events.application-listener)
-- Add Swagger
 - Populate README
+- Add event listeners (strip fields) (http://docs.spring.io/spring-data/rest/docs/current/reference/html/#events.application-listener)
+- Add event listener tests
+- Create bootstrap script
 
-Low Priority:
+
+- Make service location configurable (do not start up environment if not local host)
 - Page / Sort / Count parameter tests
+- Fix up controller exception handler to use object on duplicate key exception
 - Distinguish in response between URL not found vs. resource not found
 - Increase code analysis levels
 - Separate internal IDS from external REST endpoint??
@@ -15,5 +14,4 @@ Low Priority:
 - Add CPD
 - Make reports look nicer
 - Fail build on less than 100% code coverage
-- Pull out magic strings in tests
 - Dockerize
