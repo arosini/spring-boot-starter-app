@@ -45,7 +45,7 @@ repositories {
 * JAR 
 **************************************************/
 jar {
-  baseName = "spring-boot-starter"
+  baseName = "spring-boot-starter-app"
   version = "0.0.1-SNAPSHOT"
 }
 
