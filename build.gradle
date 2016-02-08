@@ -84,7 +84,6 @@ dependencies {
   compile "org.apache.commons:commons-lang3:3.0"
   compile "org.projectlombok:lombok"
   compile "org.springframework.boot:spring-boot-starter-actuator"
-  compile "org.springframework.boot:spring-boot-starter-aop"
   compile "org.springframework.boot:spring-boot-starter-data-mongodb"
   compile "org.springframework.boot:spring-boot-starter-data-rest"
   compile "org.springframework.boot:spring-boot-starter-web"

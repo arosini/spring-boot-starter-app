@@ -13,7 +13,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class SpringBootStarterApplication {
 
   /**
-   * Runs the {@link SpringBootApplication} this class represents.
+   * Runs the {@link SpringBootApplication} class.
    * 
    * @param args Command line arguments.
    */

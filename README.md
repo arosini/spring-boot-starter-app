@@ -7,12 +7,11 @@ A Spring Boot application to be used primarily as a sandbox or starting point.
  - Mongo
  - Lombok
  - Git
- 
-# Dependencies
- - Spring (Boot, Data REST, Actuator)
+ - Spring Boot (MVC, Data REST, Actuator, Test)
  - JUnit
  - Mockito
  - RestAssured
+ - Docker (not used yet)
  
 # Setting Up (Ubuntu)
 1. Install Git (http://git-scm.com/download/linux)

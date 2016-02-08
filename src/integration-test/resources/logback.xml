@@ -4,7 +4,5 @@
 
   <root level="error">
   </root>
-  
-  <include resource="org/springframework/boot/logging/logback/base.xml"/>
 
 </configuration>
