@@ -23,9 +23,9 @@ import java.util.Date;
 @ToString
 public abstract class Entity {
 
-  ////////////////
-  // Properties //
-  ////////////////
+  ////////////
+  // Fields //
+  ////////////
 
   /** The entity's unique identifier. */
   @Id

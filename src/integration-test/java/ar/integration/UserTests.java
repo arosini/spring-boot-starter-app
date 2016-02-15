@@ -240,6 +240,21 @@ public class UserTests extends AbstractIntegrationTests {
   }
 
   @Test
+  public void createUser_nonTrimmedValues() {
+    user.setUsername(whitespace + user.getUsername() + whitespace);
+    user.setFirstName(whitespace + user.getFirstName() + whitespace);
+    user.setLastName(whitespace + user.getLastName() + whitespace);
+
+    lastResponse = given().body(user).contentType(ContentType.JSON).accept(ContentType.JSON).post(usersUrl);
+    assertCreatedResponse();
+
+    user.setUsername(user.getUsername().trim());
+    user.setFirstName(user.getFirstName().trim());
+    user.setLastName(user.getLastName().trim());
+    assertUserInResponse(user);
+  }
+
+  @Test
   public void createUser_nullUsername() {
     user.setUsername(null);
 
@@ -302,6 +317,21 @@ public class UserTests extends AbstractIntegrationTests {
 
     lastResponse = given().body(user).contentType(ContentType.JSON).accept(ContentType.JSON).put(userUrlNotFound);
     assertCreatedResponse();
+    assertUserInResponse(user);
+  }
+
+  @Test
+  public void createUser_specificId_nonTrimmedValues() {
+    user.setUsername(whitespace + user.getUsername() + whitespace);
+    user.setFirstName(whitespace + user.getFirstName() + whitespace);
+    user.setLastName(whitespace + user.getLastName() + whitespace);
+
+    lastResponse = given().body(user).contentType(ContentType.JSON).accept(ContentType.JSON).put(userUrlNotFound);
+    assertCreatedResponse();
+
+    user.setUsername(user.getUsername().trim());
+    user.setFirstName(user.getFirstName().trim());
+    user.setLastName(user.getLastName().trim());
     assertUserInResponse(user);
   }
 
@@ -436,6 +466,21 @@ public class UserTests extends AbstractIntegrationTests {
   public void updateUser() {
     lastResponse = given().body(user).accept(ContentType.JSON).contentType(ContentType.JSON).patch(userUrl);
     assertOkResponse();
+    assertUserInResponse(user);
+  }
+
+  @Test
+  public void updateUser_nonTrimmedValues() {
+    user.setUsername(whitespace + user.getUsername() + whitespace);
+    user.setFirstName(whitespace + user.getFirstName() + whitespace);
+    user.setLastName(whitespace + user.getLastName() + whitespace);
+
+    lastResponse = given().body(user).contentType(ContentType.JSON).accept(ContentType.JSON).patch(userUrl);
+    assertOkResponse();
+
+    user.setUsername(user.getUsername().trim());
+    user.setFirstName(user.getFirstName().trim());
+    user.setLastName(user.getLastName().trim());
     assertUserInResponse(user);
   }
 

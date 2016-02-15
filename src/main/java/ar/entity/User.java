@@ -18,17 +18,17 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @ToString(callSuper = true)
 public class User extends Entity {
 
-  ////////////////
-  // Properties //
-  ////////////////
+  ////////////
+  // Fields //
+  ////////////
 
-  /** The User's first name. */
+  /** The user's first name. */
   private String firstName;
 
-  /** The User's last name. */
+  /** The user's last name. */
   private String lastName;
 
-  /** The User's alias. */
+  /** The user's alias. */
   @Indexed(unique = true)
   private String username;
 

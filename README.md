@@ -1,5 +1,5 @@
 # spring-boot-starter-application
-A Spring Boot application to be used primarily as a sandbox or starting point.
+A Spring Boot application to be used primarily as a sandbox.
 
 # Technologies
  - Java 8
@@ -13,13 +13,13 @@ A Spring Boot application to be used primarily as a sandbox or starting point.
  - RestAssured
  - Docker (not used yet)
  
-# Setting Up (Ubuntu)
+# Setting Up (Debian/Ubuntu)
 1. Install Git (http://git-scm.com/download/linux)
     ```
     $ sudo apt-get install git
     ```
 
-2. Install Java 8 (http://tecadmin.net/install-oracle-java-8-jdk-8-ubuntu-via-ppa/)
+2. Install Java 8 (http://ubuntuhandbook.org/index.php/2015/01/install-openjdk-8-ubuntu-14-04-12-04-lts/)
     ```
     $ sudo add-apt-repository ppa:openjdk-r/ppa
     $ sudo apt-get update
@@ -42,7 +42,7 @@ A Spring Boot application to be used primarily as a sandbox or starting point.
 
 4. Install Eclipse / Spring Tools Suite
 
-    You must use Eclipse in order to have Lombok support. You will be able to get by without using Eclipse however it is _highly_ recommended you use Eclipse.
+    You must use Eclipse in order to have Lombok support.
 
     The recommended version of Eclipse is the [Spring Tools Suite](https://spring.io/tools/sts/all), however any version is OK.
 
@@ -72,12 +72,12 @@ A Spring Boot application to be used primarily as a sandbox or starting point.
 
 This will clear the old build, create a new build, run the unit tests and generate code analysis reports. The build will fail if there are any compilation errors, failing unit tests or warnings reported by the code analysis tools.
 
-# Integration Tests
+# Running Integration Tests
 ```
 ./gradlew integrationTest
 ```
 
-# Running
+# Running the Application
 To run from inside Eclipse, right click on the project and select `Run As -> Spring Boot App`  
 
 To run the JAR generated from the build:
