@@ -2,14 +2,13 @@ package ar.entity.listener;
 
 import ar.entity.Entity;
 
+import lombok.extern.java.Log;
 import org.springframework.data.rest.core.annotation.HandleBeforeCreate;
 import org.springframework.data.rest.core.annotation.HandleBeforeSave;
 import org.springframework.data.rest.core.annotation.RepositoryEventHandler;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Field;
-
-import lombok.extern.java.Log;
 
 /**
  * Handles repository events for any entity.
