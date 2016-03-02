@@ -1,5 +1,5 @@
-# spring-boot-starter-application
-A Spring Boot application to be used primarily as a sandbox.  
+# Spring Boot Starter App
+A Spring Boot app intended to be used primarily as a sandbox.  
 
 An example deployment can be found here: https://spring-boot-starter-app.herokuapp.com/.
 I added a limit of 100 requests per month, so my example deployment doesn't get charged by Heroku.
