@@ -80,9 +80,7 @@ eclipse {
 /**************************************************
 * Heroku Deployment 
 **************************************************/
-task stage(type: Copy, dependsOn: [clean, build]) {
-
-}
+task stage (dependsOn: [clean, build]) {}
 
 /**************************************************
 * Dependencies 
@@ -113,6 +111,9 @@ dependencyManagement {
 /**************************************************
 * Build Order 
 **************************************************/
+// Run clean before build (necessary for stage task)
+build.mustRunAfter clean
+
 // Run integration tests after unit tests
 integrationTest.mustRunAfter test
 
