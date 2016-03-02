@@ -3,7 +3,7 @@ A Spring Boot application to be used primarily as a sandbox.
 
 An example deployment can be found here: https://spring-boot-starter-app.herokuapp.com/.  
 
-My example deployment has a limit of 100 requests per month, so I don't get charged by Heroku.
+I added a limit of 100 requests per month, so my example deployment doesn't get charged by Heroku.
 
 # Technologies
  - Java 8
@@ -146,14 +146,14 @@ My example deployment has a limit of 100 requests per month, so I don't get char
 
 # Building
 ```
-./gradlew clean build
+$ ./gradlew clean build
  ```
 
 This will clear the old build, create a new build, run the unit tests and generate code analysis reports. The build will fail if there are any compilation errors, failing unit tests or warnings reported by the code analysis tools.
 
 # Running Integration Tests
 ```
-./gradlew integrationTest
+$ ./gradlew integrationTest
 ```
 
 # Running the Application
@@ -161,12 +161,12 @@ To run from inside Eclipse, right click on the project and select `Run As -> Spr
 
 To run the JAR generated from the build:
 ```
-java -jar build/libs/spring-boot-starter-0.0.1-SNAPSHOT.jar
+$ java -jar build/libs/spring-boot-starter-0.0.1-SNAPSHOT.jar
 ```
 
 # Deploying to Heroku
 ```
-git push heroku master
+$ git push heroku master
 ```
 
 Reference: https://devcenter.heroku.com/articles/deploying-spring-boot-apps-to-heroku#preparing-a-spring-boot-app-for-heroku

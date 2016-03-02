@@ -39,7 +39,8 @@ public class RequestLimitFilter extends OncePerRequestFilter {
       response.setContentType(MediaType.APPLICATION_JSON_VALUE);
       response.getWriter()
           .write(
-              "{ \"errors\": [ { \"message\": \"The request limit for this week has been reached (sorry, I don't want to be charged).\" } ] }");
+              "{ \"errors\": [ { \"message\": \"The request limit for this week has "
+                  + "been reached (sorry, I don't want to be charged).\" } ] }");
     }
   }
 

@@ -14,7 +14,7 @@ import org.springframework.data.rest.webmvc.config.RepositoryRestConfigurerAdapt
 import org.springframework.scheduling.annotation.Scheduled;
 
 /**
- * Configuration for MongoDB repositories.
+ * Configuration for MongoDB.
  * 
  * @author adam
  *
