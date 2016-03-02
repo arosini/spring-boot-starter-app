@@ -1,1 +1,1 @@
-web: java $JAVA_OPTS -Dspring.profiles.active=prod -Dserver.port=$PORT -Dspring.data.mongodb.uri=$MONGOLAB_URI -jar build/libs/*.jar
+web: java $JAVA_OPTS -Dspring.profiles.active=prod -Dserver.port=$PORT -Dspring.data.mongodb.uri=$MONGOLAB_URI -Dspring.data.mongodb.database=heroku_tcfmpmr0 -jar build/libs/*.jar
