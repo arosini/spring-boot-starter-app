@@ -1,4 +1,1 @@
-web: java $JAVA_OPTS -jar target/*.jar 
---spring.profiles.active=prod 
---server.port=$PORT 
---spring.data.mongodb.uri=$MONGOLAB_URI
+web: java $JAVA_OPTS -Dspring.profiles.active=prod -Dserver.port=$PORT -Dspring.data.mongodb.uri=$MONGOLAB_URI -jar target/*.jar 
