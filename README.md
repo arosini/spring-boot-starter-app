@@ -64,6 +64,12 @@ A Spring Boot application to be used primarily as a sandbox.
     - Open up Eclipse and select `File -> Import -> Gradle -> Gradle Project` and then click `Next`
     - Click on `Browse` and select the cloned repository location
     - Click on `Build Model` and then `Finish`
+    
+8. Install and login to Heroku
+    ```
+    $ wget -O- https://toolbelt.heroku.com/install-ubuntu.sh | sh
+    $ heroku login
+    ```
 
 # Building
 ```
@@ -84,6 +90,13 @@ To run the JAR generated from the build:
 ```
 java -jar build/libs/spring-boot-starter-0.0.1-SNAPSHOT.jar
 ```
+
+# Deploying to Heroku
+```
+git push heroku master
+```
+
+Reference: https://devcenter.heroku.com/articles/deploying-spring-boot-apps-to-heroku#preparing-a-spring-boot-app-for-heroku
 
 # Available Reports
 To view the reports generated during the build, see the `build/reports` directory. The following reports are available:
