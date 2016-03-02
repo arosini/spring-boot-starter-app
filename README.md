@@ -1,7 +1,9 @@
 # spring-boot-starter-application
 A Spring Boot application to be used primarily as a sandbox.  
 
-An example deployment can be found here: https://spring-boot-starter-app.herokuapp.com/
+An example deployment can be found here: https://spring-boot-starter-app.herokuapp.com/.  
+
+My example deployment has a limit of 100 requests per month, so I don't get charged by Heroku.
 
 # Technologies
  - Java 8
@@ -16,6 +18,7 @@ An example deployment can be found here: https://spring-boot-starter-app.herokua
  - Docker (not used yet)
  
 # Example Requests
+
 - Check the API's health:  
     ```
     GET https://spring-boot-starter-app.herokuapp.com/admin/health
@@ -81,8 +84,6 @@ An example deployment can be found here: https://spring-boot-starter-app.herokua
     ```
 
 - Delete a user: ```DELETE https://spring-boot-starter-app.herokuapp.com/users/4```
-
-My example deployment has a limit of 100 requests per month, so I don't get charged by Heroku. Also a user's username must be unique.
  
 # Setting Up (Debian/Ubuntu)
 1. Install Git (http://git-scm.com/download/linux)
