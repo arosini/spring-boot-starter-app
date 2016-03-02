@@ -10,6 +10,7 @@ import static org.hamcrest.Matchers.startsWith;
 import ar.SpringBootStarterApplication;
 import ar.entity.Entity;
 import ar.entity.User;
+import ar.filter.RequestLimitFilter;
 import ar.repository.UserRepository;
 
 import com.jayway.restassured.http.ContentType;
@@ -38,15 +39,19 @@ import java.util.regex.Pattern;
 @WebIntegrationTest
 public abstract class AbstractIntegrationTests {
 
-  /** The port the service is listening on (randomly assigned when context is initiated). */
-  @Value("${local.server.port}")
-  private int port;
-
   /** The location and port of the service. */
   protected String baseUrl;
 
   /** The last response received from the service. */
   protected Response lastResponse;
+
+  /** The port the service is listening on (randomly assigned when context is initiated). */
+  @Value("${local.server.port}")
+  private int port;
+
+  /** Limits the number of requests to the application. */
+  @Autowired
+  private RequestLimitFilter requestLimitFilter;
 
   /**
    * Manipulates {@link User} entities.
@@ -59,6 +64,7 @@ public abstract class AbstractIntegrationTests {
   public void before() {
     lastResponse = null;
     baseUrl = "http://localhost:" + port;
+    requestLimitFilter.resetRequestCount();
 
     userRepository.deleteAll();
     createUsers();
@@ -67,27 +73,6 @@ public abstract class AbstractIntegrationTests {
   ///////////////////////
   // ASSERTION HELPERS //
   ///////////////////////
-
-  /**
-   * Asserts the last response had a status of 400, a content type of JSON, and a body with the provided information.
-   * 
-   * @param lastResponse The response containing the error.
-   * @param status The HTTP status code of the response.
-   * @param entityClass The entity class which caused the error.
-   * @param message The message associated with the error.
-   * @param invalidValue The value which caused the error.
-   * @param property The property which caused the error.
-   */
-  protected void assertErrorResponse(int status, Class<? extends Entity> entityClass, String message,
-      String invalidValue, String property) {
-    lastResponse.then()
-        .contentType(ContentType.JSON)
-        .statusCode(status)
-        .body("errors[0].entity", equalTo(entityClass.getSimpleName()))
-        .body("errors[0].message", equalTo(message))
-        .body("errors[0].invalidValue", equalTo(invalidValue))
-        .body("errors[0].property", equalTo(property));
-  }
 
   /**
    * Asserts a response resource's common fields such as audit fields and links.
@@ -120,6 +105,27 @@ public abstract class AbstractIntegrationTests {
     lastResponse.then()
         .contentType(ContentType.JSON)
         .statusCode(HttpStatus.SC_CREATED);
+  }
+
+  /**
+   * Asserts the last response had a status of 400, a content type of JSON, and a body with the provided information.
+   * 
+   * @param lastResponse The response containing the error.
+   * @param status The HTTP status code of the response.
+   * @param entityClass The entity class which caused the error.
+   * @param message The message associated with the error.
+   * @param invalidValue The value which caused the error.
+   * @param property The property which caused the error.
+   */
+  protected void assertErrorResponse(int status, Class<? extends Entity> entityClass, String message,
+      String invalidValue, String property) {
+    lastResponse.then()
+        .contentType(ContentType.JSON)
+        .statusCode(status)
+        .body("errors[0].entity", equalTo(entityClass.getSimpleName()))
+        .body("errors[0].message", equalTo(message))
+        .body("errors[0].invalidValue", equalTo(invalidValue))
+        .body("errors[0].property", equalTo(property));
   }
 
   /**

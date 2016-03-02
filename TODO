@@ -1,16 +1,13 @@
-- Add event listeners (strip fields) (http://docs.spring.io/spring-data/rest/docs/current/reference/html/#events.application-listener)
-- Add event listener tests
-
-
-- Increase code analysis levels
 - Fix up controller exception handler to use object on duplicate key exception
 - Distinguish in response between URL not found vs. resource not found
-- Consolidate checks/reports (checkStyle, Jacoco, PMD, Findbugs) into single index page
-- Make reports look nicer
 - Create bootstrap script
 - Separate internal IDS from external REST endpoint??
-- Fail build based on code coverage %
-- Dockerize
 - Page / Sort / Count parameter tests
+- Dockerize
 - Make service location configurable for cucumber tests (do not start up environment unless local host is specified would be nice)
 - Update Javadoc to use @link
+
+- Increase code analysis levels
+- Consolidate checks/reports (checkStyle, Jacoco, PMD, Findbugs) into single index page
+- Make reports look nicer
+- Fail build based on code coverage %

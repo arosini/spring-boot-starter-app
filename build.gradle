@@ -88,6 +88,7 @@ task stage (dependsOn: [clean, build]) {}
 dependencies {
   compile "org.apache.commons:commons-lang3:3.0"
   compile "org.projectlombok:lombok"
+  compile "org.springframework.boot:spring-boot-configuration-processor"
   compile "org.springframework.boot:spring-boot-starter-actuator"
   compile "org.springframework.boot:spring-boot-starter-data-mongodb"
   compile "org.springframework.boot:spring-boot-starter-data-rest"

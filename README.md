@@ -1,5 +1,7 @@
 # spring-boot-starter-application
-A Spring Boot application to be used primarily as a sandbox.
+A Spring Boot application to be used primarily as a sandbox.  
+
+An example deployment can be found here: https://spring-boot-starter-app.herokuapp.com/
 
 # Technologies
  - Java 8
@@ -12,6 +14,41 @@ A Spring Boot application to be used primarily as a sandbox.
  - Mockito
  - RestAssured
  - Docker (not used yet)
+ 
+# Example Requests
+- Check the API's health: ```GET https://spring-boot-starter-app.herokuapp.com/admin/health```
+- View the API: ```GET https://spring-boot-starter-app.herokuapp.com/```
+- View the API's profile: ```GET https://spring-boot-starter-app.herokuapp.com/profile```
+- View the users API: ```GET https://spring-boot-starter-app.herokuapp.com/users```
+- View the users API profile: ```GET https://spring-boot-starter-app.herokuapp.com/profile/users```
+- Retrieve a single user: ```GET https://spring-boot-starter-app.herokuapp.com/users/1```
+- Search users: ```GET https://spring-boot-starter-app.herokuapp.com/users/search```
+- Find users by last name ```GET https://spring-boot-starter-app.herokuapp.com/users/search/findByLastName?lastName=Summers```
+- Create a user with a generated ID:
+    ```
+    POST https://spring-boot-starter-app.herokuapp.com/users
+    Content-Type: Application/json
+    Accept: application/json
+    Body: { "username": "Nightcrawler", "firstName": "Kurt", "lastName": "Wagner" }
+    ```
+- Create a user with a specific ID:
+    ```
+    PUT https://spring-boot-starter-app.herokuapp.com/users/4
+    Content-Type: Application/json
+    Accept: application/json
+    Body: { "username": "Nightcrawler", "firstName": "Kurt", "lastName": "Wagner" }
+    ```  
+- Update a user:
+    ```
+    PATCH https://spring-boot-starter-app.herokuapp.com/users/4
+    Content-Type: Application/json
+    Accept: application/json
+    Body: { "username": "Nightcrawler", "firstName": "Kurt", "lastName": "Wagner" }
+    ```
+
+- Delete a user: ```DELETE https://spring-boot-starter-app.herokuapp.com/users/4```
+
+My example deployment has a limit of 100 requests per month, so I don't get charged by Heroku. Also a user's username must be unique.
  
 # Setting Up (Debian/Ubuntu)
 1. Install Git (http://git-scm.com/download/linux)

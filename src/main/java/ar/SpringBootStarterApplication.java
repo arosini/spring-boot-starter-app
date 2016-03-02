@@ -2,6 +2,7 @@ package ar;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
 /**
  * A Spring Boot application for demonstration purposes.
@@ -10,6 +11,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * 
  */
 @SpringBootApplication
+@EnableConfigurationProperties
 public class SpringBootStarterApplication {
 
   /**

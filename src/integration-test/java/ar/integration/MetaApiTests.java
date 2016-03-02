@@ -13,7 +13,7 @@ import org.junit.Test;
  * @author adam
  *
  */
-public class ApiTests extends AbstractIntegrationTests {
+public class MetaApiTests extends AbstractIntegrationTests {
 
   //////////
   // URLs //
@@ -32,6 +32,7 @@ public class ApiTests extends AbstractIntegrationTests {
   @Test
   public void getBaseUrl() {
     lastResponse = given().accept(ContentType.JSON).get(baseUrl);
+    assertOkResponse();
     lastResponse.then()
         .body("_links.profile.href", equalTo(profileUrl))
         .body("_links.users.href", equalTo(baseUrl + "/users{?page,size,sort}"))
@@ -48,6 +49,7 @@ public class ApiTests extends AbstractIntegrationTests {
   @Test
   public void getProfile() {
     lastResponse = given().accept(ContentType.JSON).get(profileUrl);
+    assertOkResponse();
     lastResponse.then()
         .body("_links.self.href", equalTo(profileUrl))
         .body("_links.users.href", equalTo(baseUrl + "/profile/users"));
