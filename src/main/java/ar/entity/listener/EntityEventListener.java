@@ -2,13 +2,14 @@ package ar.entity.listener;
 
 import ar.entity.Entity;
 
-import lombok.extern.java.Log;
 import org.springframework.data.rest.core.annotation.HandleBeforeCreate;
 import org.springframework.data.rest.core.annotation.HandleBeforeSave;
 import org.springframework.data.rest.core.annotation.RepositoryEventHandler;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Field;
+
+import lombok.extern.java.Log;
 
 /**
  * Handles repository events for any entity.
@@ -24,7 +25,8 @@ public class EntityEventListener {
   /**
    * Triggers before an entity is created.
    * 
-   * @param entity The entity being created.
+   * @param entity
+   *          The entity being created.
    */
   @HandleBeforeCreate
   public void onBeforeCreate(Entity entity) {
@@ -34,7 +36,8 @@ public class EntityEventListener {
   /**
    * Triggered before an entity is saved.
    * 
-   * @param entity The entity being saved.
+   * @param entity
+   *          The entity being saved.
    */
   @HandleBeforeSave
   public void onBeforeSave(Entity entity) {
@@ -44,7 +47,8 @@ public class EntityEventListener {
   /**
    * Trims all String values in the provided entity.
    * 
-   * @param entity The entity to trim string values from.
+   * @param entity
+   *          The entity to trim string values from.
    */
   private void trimStrings(Entity entity) {
     Class<?> clazz = entity.getClass();
@@ -62,7 +66,7 @@ public class EntityEventListener {
         clazz = clazz.getSuperclass();
       }
     } catch (IllegalAccessException e) {
-      log.severe("IllegalAccesException occurred while trimming String value before save for class " + clazz + ": "
+      log.severe("IllegalAccessException occurred while trimming String value before save for class " + clazz + ": "
           + e.getLocalizedMessage());
     }
   }

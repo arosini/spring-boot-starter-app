@@ -25,7 +25,7 @@ public class MongoConfiguration extends RepositoryRestConfigurerAdapter {
    * @return The auditing object for MongoDB documents.
    */
   @Bean
-  public AuditorAware<String> auditor() {
+  public AuditorAware<String> auditorAware() {
     return new AuditorAware<String>() {
       @Override
       public String getCurrentAuditor() {
