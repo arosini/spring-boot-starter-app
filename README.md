@@ -141,6 +141,7 @@ My example deployment has a limit of 100 requests per month, so I don't get char
     ```
     $ wget -O- https://toolbelt.heroku.com/install-ubuntu.sh | sh
     $ heroku login
+    $ heroku git:remote -a spring-boot-starter-app
     ```
 
 # Building
