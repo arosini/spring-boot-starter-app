@@ -1,8 +1,7 @@
 # spring-boot-starter-application
 A Spring Boot application to be used primarily as a sandbox.  
 
-An example deployment can be found here: https://spring-boot-starter-app.herokuapp.com/.  
-
+An example deployment can be found here: https://spring-boot-starter-app.herokuapp.com/.
 I added a limit of 100 requests per month, so my example deployment doesn't get charged by Heroku.
 
 # Technologies
@@ -137,7 +136,7 @@ I added a limit of 100 requests per month, so my example deployment doesn't get 
     - Click on `Browse` and select the cloned repository location
     - Click on `Build Model` and then `Finish`
     
-8. Install and login to Heroku
+8. Install and setup Heroku
     ```
     $ wget -O- https://toolbelt.heroku.com/install-ubuntu.sh | sh
     $ heroku login
