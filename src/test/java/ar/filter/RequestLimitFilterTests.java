@@ -90,7 +90,7 @@ public class RequestLimitFilterTests {
   @Test
   public void resetRequestLimit() {
     requestCount.set(1);
-    Assert.assertNotEquals(requestCount.get(), 0);
+    Assert.assertEquals(requestCount.get(), 1);
 
     requestLimitFilter.resetRequestCount();
     Assert.assertEquals(requestCount.get(), 0);

@@ -25,8 +25,10 @@ import javax.servlet.http.HttpServletResponse;
 @ConfigurationProperties(prefix = "request-limit-filter")
 public class RequestLimitFilter extends OncePerRequestFilter {
 
+  /** The maximum number of requests the API can accept each week. */
   private int requestLimit;
 
+  /** The number of requests the API has processed this week. Resets at 4:00 AM every Sunday. */
   private AtomicInteger requestCount = new AtomicInteger();
 
   @Override

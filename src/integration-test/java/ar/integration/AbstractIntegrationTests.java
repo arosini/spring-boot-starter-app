@@ -3,6 +3,7 @@ package ar.integration;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.isEmptyString;
+import static org.hamcrest.Matchers.lessThan;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.Matchers.startsWith;
@@ -24,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.boot.test.WebIntegrationTest;
+import org.springframework.http.HttpMethod;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.regex.Pattern;
@@ -39,13 +41,27 @@ import java.util.regex.Pattern;
 @WebIntegrationTest
 public abstract class AbstractIntegrationTests {
 
-  /** The location and port of the service. */
-  protected String baseUrl;
+  /////////////////////////
+  // Shared Test Objects //
+  /////////////////////////
 
   /** The last response received from the service. */
   protected Response lastResponse;
 
-  /** The port the service is listening on (randomly assigned when context is initiated). */
+  /** The maximum number of requests that can be made to the API each week. */
+  protected int requestLimit;
+
+  /** The path of the API root. */
+  protected String rootPath;
+
+  /** The location and port of the service. */
+  protected String rootUrl;
+
+  ///////////////////////
+  // Spring Components //
+  ///////////////////////
+
+  /** The port the service is listening on (randomly assigned when context is initialized). */
   @Value("${local.server.port}")
   private int port;
 
@@ -59,19 +75,27 @@ public abstract class AbstractIntegrationTests {
   @Autowired
   private UserRepository userRepository;
 
-  /** Initializes a test by setting global information and creating test data. Called before each test. */
+  ////////////////////
+  // Initialization //
+  ////////////////////
+
+  /** Initializes a test by setting information and creating data. Called before each test. */
   @Before
   public void before() {
     lastResponse = null;
-    baseUrl = "http://localhost:" + port;
+
+    rootPath = "/";
+    rootUrl = "http://localhost:" + port;
+
     requestLimitFilter.resetRequestCount();
+    requestLimit = requestLimitFilter.getRequestLimit();
 
     userRepository.deleteAll();
     createUsers();
   }
 
   ///////////////////////
-  // ASSERTION HELPERS //
+  // Assertion Helpers //
   ///////////////////////
 
   /**
@@ -84,7 +108,7 @@ public abstract class AbstractIntegrationTests {
   protected void assertCommonFields(String jsonPath, Class<? extends Entity> resourceClass,
       String resourceId) {
     String resourceType = resourceClass.getSimpleName().toLowerCase();
-    String resourceClassUrl = baseUrl + "/" + English.plural(resourceType) + "/";
+    String resourceClassUrl = rootUrl + "/" + English.plural(resourceType) + "/";
 
     Matcher<String> linkMatcher = resourceId == null ? startsWith(resourceClassUrl)
         : equalTo(resourceClassUrl + resourceId);
@@ -159,6 +183,21 @@ public abstract class AbstractIntegrationTests {
   }
 
   /**
+   * Asserts the last response had a status of 405, a content type of JSON and specific body elements.
+   */
+  protected void assertMethodNotAllowedResponse(HttpMethod method, String url) {
+    lastResponse.then()
+        .contentType(ContentType.JSON)
+        .statusCode(HttpStatus.SC_METHOD_NOT_ALLOWED)
+        .body("timestamp", lessThan(System.currentTimeMillis()))
+        .body("status", equalTo(405))
+        .body("error", equalTo("Method Not Allowed"))
+        .body("exception", equalTo("org.springframework.web.HttpRequestMethodNotSupportedException"))
+        .body("message", equalTo("Request method '" + method + "' not supported"))
+        .body("path", equalTo(url));
+  }
+
+  /**
    * Asserts the last response had a status of 200 and a content type of JSON.
    */
   protected void assertOkResponse() {
@@ -196,7 +235,7 @@ public abstract class AbstractIntegrationTests {
   }
 
   ///////////////////////////
-  // DATA CREATION HELPERS //
+  // Data Creation Helpers //
   ///////////////////////////
 
   private void createUsers() {

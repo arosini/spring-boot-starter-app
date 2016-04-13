@@ -6,8 +6,8 @@
 - Dockerize
 - Make service location configurable for cucumber tests (do not start up environment unless local host is specified would be nice)
 - Update Javadoc to use @link
-
 - Increase code analysis levels
 - Consolidate checks/reports (checkStyle, Jacoco, PMD, Findbugs) into single index page
 - Make reports look nicer
 - Fail build based on code coverage %
+- Implement / test HTTP methods [OPTIONS, CONNECT and TRACE]
