@@ -1,13 +1,19 @@
+- Move tests to seperate files
 - Fix up controller exception handler to use object on duplicate key exception
-- Distinguish in response between URL not found vs. resource not found
 - Create bootstrap script
 - Separate internal IDS from external REST endpoint??
-- Page / Sort / Count parameter tests
 - Dockerize
-- Make service location configurable for cucumber tests (do not start up environment unless local host is specified would be nice)
 - Update Javadoc to use @link
 - Increase code analysis levels
 - Consolidate checks/reports (checkStyle, Jacoco, PMD, Findbugs) into single index page
 - Make reports look nicer
-- Fail build based on code coverage %
+
+
+
+- Tests for ignored fields (id, audits)
+- Page / Sort / Count parameter tests
+- Review tests (unit and integration) for completeness
 - Implement / test HTTP methods [OPTIONS, CONNECT and TRACE]
+- Distinguish in response between URL not found vs. resource not found
+- Make service location configurable for cucumber tests (do not start up environment unless local host is specified would be nice)
+- Fail build based on code coverage %
